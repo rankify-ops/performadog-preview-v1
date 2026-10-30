@@ -35,7 +35,7 @@ PRODUCTS = [
                    ("Ash (typical)", "7.5%"), ("Calcium", "1.5%"), ("Phosphorus", "1.0%")],
          protein="32", fat="22", ing_key=2,
          blurb="High protein and fat for dogs that train, track, work and compete. Turkey and lamb, no grains, no chicken.",
-         long="A concentrated, nutritionally dense diet for canine athletes, dogs with a high workload, and dogs recovering from illness or surgery. The bag puts it plainly: it's built for dogs under high levels of stress — breeding, competition, police and military work.",
+         long="A concentrated, nutritionally dense diet for canine athletes, dogs with a high workload, and dogs recovering from illness or surgery. The bag puts it plainly: it's built for dogs under high levels of stress, breeding, competition, police and military work.",
          for_who=["Detection, protection and search dogs", "Dog sport and competition", "Breeding dogs", "Recovery after illness or surgery"],
          tags="dog working sport"),
     dict(slug="ocean-fish", ings=["Wild-caught tuna","Lamb","Fish oil","Lamb fat","Rice","Oat groats","Sweet lupins","Alfalfa","Garlic","Carrots","Spinach","Parsley","Kelp","Yeast extract","Methionine"], ings_tbc=True, name="Ocean Fish", full="Performadog Ocean Fish",
@@ -45,7 +45,7 @@ PRODUCTS = [
                    ("Ash (typical)", "7%"), ("Calcium", "1.3%"), ("Phosphorus", "0.8%")],
          protein="22", fat="14", ing_key=1,
          blurb="Wild-caught tuna and lamb for dogs with allergies, itchy skin or a touchy stomach. No chicken.",
-         long="Wild-caught tuna and lamb with fish oil, kelp and yeast extract. It's the food most owners with itchy, allergic or sensitive dogs end up on — and the one most of the reviews on this site are about.",
+         long="Wild-caught tuna and lamb with fish oil, kelp and yeast extract. It's the food most owners with itchy, allergic or sensitive dogs end up on, and the one most of the reviews on this site are about.",
          for_who=["Itchy or allergic skin", "Sensitive stomachs and loose stools", "Dogs that can't have chicken", "Everyday adult maintenance"],
          tags="dog sensitive"),
     dict(slug="puppy-lamb-and-fish", ings=["Australian lamb","Wild-caught tuna","Lamb fat","Rice","Oat groats","Sweet lupins","Carrots","Spinach","Parsley","Kelp","Yeast extract","Yucca schidigera"], ings_tbc=True, name="Puppy Lamb & Fish", full="Performadog Puppy Lamb & Fish",
@@ -55,7 +55,7 @@ PRODUCTS = [
                    ("Ash (typical)", "10%"), ("Calcium", "1.9%"), ("Phosphorus", "1.4%")],
          analysis_tbc=True, protein="29", fat="18", ing_key=0,
          blurb="Chicken-free growth food for brain, bone and lean muscle. What Von Forell litters are raised on.",
-         long="Australian lamb and wild-caught tuna with rice, oat groats and vegetables. Built as a sole food for growing puppies — brain, bone and lean muscle — and fed to the Von Forell litters from weaning.",
+         long="Australian lamb and wild-caught tuna with rice, oat groats and vegetables. Built as a sole food for growing puppies (brain, bone and lean muscle) and fed to the Von Forell litters from weaning.",
          for_who=["Puppies from weaning", "Large and working breeds while they grow", "Litters (breeders)", "Pups that can't have chicken"],
          tags="dog puppy"),
     dict(slug="purple-boost", name="Purple Boost", full="Purple Boost", kind="supplement", job="Gut support topper",
@@ -71,7 +71,7 @@ PRODUCTS = [
          code="IP-01", img="iPurr_GFOKangaroo-cut.webp", sizes=[("2.5 kg", 2.5, 48)],
          analysis=[("Crude protein (min)", "28%"), ("Crude fat (min)", "16%"), ("Crude fibre (max)", "3%"),
                    ("Ash (typical)", "6%"), ("Calcium", "1.0%"), ("Phosphorus", "0.9%")], analysis_tbc=True,
-         ing_key=3, blurb="Wild kangaroo and grass-fed lamb with taurine. No chicken — made for cats that react to poultry.",
+         ing_key=3, blurb="Wild kangaroo and grass-fed lamb with taurine. No chicken. Made for cats that react to poultry.",
          long="Wild kangaroo and grass-fed lamb, with taurine and low magnesium for urinary health. Made for cats of all ages, and for the ones that react to chicken and poultry meal.",
          for_who=["Cats of all ages", "Cats that react to chicken", "Urinary health (low magnesium)"],
          tags="cat"),
@@ -107,7 +107,7 @@ MARKERS = [("Haemoglobin", "g/L", "Carries oxygen to working muscle."),
            ("Albumin", "g/L", "The main blood protein; reflects protein status."),
            ("ALT", "U/L", "A liver enzyme.")]
 
-# Real testimonials from performadog.com.au/testimonials — excerpts are verbatim.
+# Real testimonials from performadog.com.au/testimonials. Excerpts are verbatim.
 # tags: working sport breeder family sensitive puppy cat. rel: material connection to disclose.
 T = [
     dict(id="kern", name="Dr Michael Kern", role="Handler · Perth", dog="Caesar · Von Forell Dobermann", tags="sport working",

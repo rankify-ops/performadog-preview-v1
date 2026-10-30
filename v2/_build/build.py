@@ -10,17 +10,19 @@ E = html.escape
 
 # ---- image slots --------------------------------------------------------------
 # slot -> {"src","alt","stock":bool} ; missing slot renders a "PHOTO NEEDED" panel.
+import hashlib
+VER = hashlib.md5((open(os.path.join(OUT, 'assets', 'site.css'), 'rb').read() + open(os.path.join(OUT, 'assets', 'site.js'), 'rb').read())).hexdigest()[:8]
 LIB, VIDEOS = [], []
 IMG = json.load(open(os.path.join(os.path.dirname(__file__), 'images.json')))
 
 
-def pic(slot, label, cls='ratio-43', extra=''):
+def pic(slot, label, cls='ratio-43', extra='', eager=False):
     im = IMG.get(slot)
     if not im:
         return f'<div class="shot ph {cls}" {extra}><p class="mono">{E(label)}</p></div>'
-    tag = '<span class="stock-tag">Stock — to replace</span>' if im.get('stock') else ''
+    tag = '<span class="stock-tag">Stock, to replace</span>' if im.get('stock') else ''
     pos = f' style="object-position:{im["pos"]}"' if im.get('pos') else ''
-    return (f'<div class="shot {cls}" {extra}>{tag}<img src="{im["src"]}" alt="{E(im["alt"])}" loading="lazy"{pos}></div>')
+    return (f'<div class="shot {cls}" {extra}>{tag}<img src="{im["src"]}" alt="{E(im["alt"])}" loading="{"eager" if eager else "lazy"}"{pos}></div>')
 
 
 def tbc(text):
@@ -51,12 +53,12 @@ def page(fname, title, desc, body, active=None):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Barlow+Condensed:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/site.css?v={VER}">
 </head>
 <body>
 <div class="preview-bar">Design preview v2 · not the live store · <span class="tbc">highlighted</span> = info we need from you</div>
 <div class="ann"><span>Free metro delivery over ${FREE_SHIP}</span><span class="hide-s"> · Subscribe &amp; save on every bag · Dispatched within 24 hours</span></div>
-<header class="hdr">
+<header class="hdr steelfx">
 <div class="wrap">
 <a class="logo" href="index.html" aria-label="Performadog home"><img src="assets/img/brand/logo-lockup.png" alt="Performadog" width="630" height="125"></a>
 <nav class="nav" aria-label="Main">{nav}</nav>
@@ -71,7 +73,7 @@ def page(fname, title, desc, body, active=None):
 </main>
 {footer()}
 <div class="cart-scrim" data-cart-close hidden></div>
-<aside class="cart" aria-label="Cart" aria-hidden="true" data-cart>
+<aside class="cart" aria-label="Cart" aria-hidden="true" data-cart hidden>
 <div class="cart-hd"><p class="d d-sm">Your cart</p><button class="cart-x" type="button" data-cart-close aria-label="Close cart">✕</button></div>
 <div class="ship-bar"><p class="small" data-ship-msg></p><div class="track"><span data-ship-fill></span></div></div>
 <div class="cart-items" data-cart-items></div>
@@ -79,8 +81,7 @@ def page(fname, title, desc, body, active=None):
 <p class="small muted">Subscribe at checkout and save on every bag. Regional freight shown before you pay.</p>
 <button class="btn btn-ember btn-block" type="button" data-checkout>Checkout</button><p class="small muted center" data-checkout-msg></p>
 <button class="btn btn-line btn-block" type="button" data-cart-close>Keep shopping</button></div></aside>
-<div class="toast" role="status" aria-live="polite" data-toast></div>
-<script src="assets/site.js"></script>
+<script src="assets/site.js?v={VER}"></script>
 </body>
 </html>'''
     with open(os.path.join(OUT, fname), 'w') as f:
@@ -161,6 +162,60 @@ PD_BASIS = {'dog': (180, '30 kg adult'), 'puppy': (205, '15 kg pup, 4–6 mo'), 
 CART_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>'
 
 
+def ico(d):
+    return f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{d}</svg>'
+
+
+I_TRUCK = ico('<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>')
+I_SHIELD = ico('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>')
+I_STAR = ico('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>')
+I_CLOCK = ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
+I_REPEAT = ico('<path d="M4 12a8 8 0 0 1 14-5.3L20 8M20 4v4h-4M20 12a8 8 0 0 1-14 5.3L4 16M4 20v-4h4"/>')
+NEEDS = [('turkey-grain-free.html', 'Working &amp; sport', 'Turkey Grain Free', ico('<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>')),
+         ('puppy-lamb-and-fish.html', 'Growing puppies', 'Puppy Lamb &amp; Fish', ico('<circle cx="6.5" cy="9" r="1.8"/><circle cx="10" cy="5.5" r="1.8"/><circle cx="14" cy="5.5" r="1.8"/><circle cx="17.5" cy="9" r="1.8"/><path d="M8 17.5c0-3 1.8-5.5 4-5.5s4 2.5 4 5.5c0 1.6-1.8 2.5-4 2.5s-4-.9-4-2.5z"/>')),
+         ('ocean-fish.html', 'Sensitive gut &amp; skin', 'Ocean Fish', ico('<path d="M5 19c0-8 6-14 15-14 0 9-6 15-14 15"/><path d="M5 19l7-7"/>')),
+         ('feeding-guide.html?goal=family', 'Active family dogs', 'Find the right food', ico('<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>')),
+         ('purple-boost.html', 'Gut support', 'Purple Boost', ico('<rect x="6" y="8" width="12" height="13" rx="2"/><path d="M8 3h8v5H8z"/>')),
+         ('shop.html#cats', 'Cats', 'iPurr range', ico('<path d="M5 4l3 4h8l3-4v9a7 7 0 0 1-14 0z"/><circle cx="9.5" cy="13" r=".8"/><circle cx="14.5" cy="13" r=".8"/>'))]
+
+
+def usp_bar():
+    items = [(I_TRUCK, 'Free metro delivery', f'on orders over ${FREE_SHIP}'), (I_REPEAT, 'Subscribe &amp; save', 'skip or cancel anytime'),
+             (I_SHIELD, 'Palatability guarantee', 'or your money back'), (I_STAR, 'Australian made', '97.2% Aussie ingredients')]
+    li = ''.join(f'<li class="{"on" if i == 0 else ""}">{ic}<span><b>{a}</b> {c}</span></li>' for i, (ic, a, c) in enumerate(items))
+    return f'<div class="usp steelfx"><div class="wrap"><ul data-usp>{li}</ul></div></div>'
+
+
+def needs_block():
+    tiles = ''.join(f'<a class="need" href="{h}"><span class="need-ic steelfx">{ic}</span><span class="need-t">{t}</span><span class="need-s">{s} →</span></a>' for h, t, s, ic in NEEDS)
+    return plain_section(f'<div class="row between" style="margin-bottom:24px;align-items:baseline"><h2 class="h2">Shop by need</h2><a class="link" href="shop.html">See the full range →</a></div><div class="needs">{tiles}</div>', 'alt', 'pad-s')
+
+
+TL_DETAIL = {
+    '1980': ('First Dobermann', 'At 16, after the family home was broken into, Kris bought his first Dobermann and started training dogs.', 'kris'),
+    '1982': ('Von Forell begins', 'A dog let him down in a real situation. Training wasn\'t enough, so Kris turned to genetics and started breeding under the Von Forell name.', 'kennel'),
+    '1984': ('Working dogs for hire', 'Kris sets up a dog security company in Melbourne, putting his dogs to work every day.', None),
+    '1993': ('Raising the standard', 'Joins the National Dog Trainers Federation and starts a frozen semen bank to protect the best bloodlines.', None),
+    '2000': ('Detector Dogs Australia', 'Co-founds Detector Dogs Australia. Its teams now search venues like the MCG and the Port of Melbourne.', 'dda1'),
+    '2003': ('National champion', 'Von Forell Vilco wins the National Australian Schutzhund Championship. Kris is made a Life Member of the NDTF.', 'training'),
+    '2015': ('Performadog in the kennel', 'After his sponsor\'s food changed and his dogs lost condition, Kris starts trialling his own formula on the Von Forell dogs.', 'range'),
+    '2018': ('Bill Wiadrowski joins', 'Animal nutritionist Bill Wiadrowski, formulating diets since 1986, joins to refine the range.', None),
+}
+
+
+def timeline(years=None):
+    ys = [y for y, _ in TIMELINE if (years is None or y in years)]
+    btns = ''.join(f'<button class="tl-y" type="button" role="tab" aria-selected="{"true" if i == 0 else "false"}" data-i="{i}"><span class="tl-dot"></span>{y}</button>' for i, y in enumerate(ys))
+    panels = ''
+    for i, y in enumerate(ys):
+        h, txt, img = TL_DETAIL[y]
+        media = pic(img, '', 'ratio-43', eager=True) if img and IMG.get(img) else f'<div class="tl-big steelfx"><span>{y}</span></div>'
+        panels += f'<div class="tl-p" role="tabpanel" data-i="{i}" {"" if i == 0 else "hidden"}>{media}<div class="stack"><p class="mono steel">{y}</p><h3 class="h2">{h}</h3><p class="muted">{txt}</p></div></div>'
+    return f'''<div class="tline" data-tline><div class="tl-head"><div class="tl-ys" role="tablist" aria-label="Timeline">{btns}</div>
+<div class="tl-nav"><button class="tl-arr" type="button" data-tl-prev aria-label="Previous">←</button><button class="tl-arr" type="button" data-tl-next aria-label="Next">→</button></div></div>
+<div class="tl-rail"><span class="tl-fill" data-tl-fill></span></div><div class="tl-ps">{panels}</div></div>'''
+
+
 def basis(p):
     if p['slug'] == 'puppy-lamb-and-fish':
         return PD_BASIS['puppy']
@@ -218,11 +273,11 @@ def pcard(p):
 
 
 def lab_sheet():
-    rows = ''.join(f'<tr><td>{m} <span style="color:#565a54">({u})</span></td><td style="color:#565a54">—</td><td style="color:#565a54">—</td><td class="after">—</td></tr>' for m, u, _ in MARKERS)
+    rows = ''.join(f'<tr><td>{m} <span style="color:#565a54">({u})</span></td><td style="color:#565a54">TBC</td><td style="color:#565a54">TBC</td><td class="after">TBC</td></tr>' for m, u, _ in MARKERS)
     return f'''<div class="sheet"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid #121412;padding-bottom:12px">
 <p class="mono">Haematology &amp; biochemistry</p><p class="mono" style="color:#565a54">{tbc("[Lab]")} · {tbc("[Date 1]")} → {tbc("[Date 2]")}</p></div>
 <div style="overflow-x:auto"><table><thead><tr><th>Marker</th><th>Ref. range</th><th>Before</th><th>After 12 mo</th></tr></thead><tbody>{rows}</tbody></table></div>
-<p style="margin-top:14px;font-size:12px;color:#565a54">Figures go in from the two lab reports. One dog's documented results — individual results vary.</p></div>'''
+<p style="margin-top:14px;font-size:12px;color:#565a54">Figures go in from the two lab reports. One dog's documented results. Individual results vary.</p></div>'''
 
 
 # ---- pages --------------------------------------------------------------------
@@ -230,10 +285,10 @@ def home():
     t = {x['id']: x for x in T}
     hero = IMG.get('hero')
     if hero:
-        hero_cls = 'shot ratio-169'
-        hero_inner = ('<span class="stock-tag br">Stock — to replace</span>' if hero.get('stock') else '') + f'<img src="{hero["src"]}" alt="{E(hero["alt"])}"' + (f' style="object-position:{hero["pos"]}"' if hero.get('pos') else '') + '>'
+        hero_cls = 'shot'
+        hero_inner = ('<span class="stock-tag br">Stock, to replace</span>' if hero.get('stock') else '') + f'<img src="{hero["src"]}" alt="{E(hero["alt"])}"' + (f' style="object-position:{hero["pos"]}"' if hero.get('pos') else '') + '>'
     else:
-        hero_cls = 'shot ph ratio-169'
+        hero_cls = 'shot ph'
         hero_inner = '<p class="mono" style="position:absolute;left:16px;top:44px">Von Forell Dobermann mid-track, low sun, handler in frame</p>'
     ticker_items = ['Caesar · Dobermann · <span class="ember">IGP 3</span>', 'Tasmania K9 Search &amp; Rescue',
                     'Swift &amp; Rolex · Rottweilers · <span class="ember">20 km endurance test</span>', 'Koda · medical alert dog',
@@ -246,61 +301,46 @@ def home():
             dogcard(t['allgemein'], 'Rolex', 'Rottweiler · 20 km endurance', 'Allgemein Rottweilers · video to film') +
             dogcard(t['wilson'], 'Koda', 'Labrador · medical alert', 'Derek Wilson · video to film'))
     body = f'''
-<section class="sec alt"><div class="wrap">
-<div class="hero-meta"><p class="mono steel">Performance file · No. 001</p><p class="mono muted hide-m">Subject: the working dog · Feed: Performadog</p></div>
+<section class="sec hero"><div class="wrap">
+<div class="hero2">
+<div class="hero-copy">
 <h1 class="d d-xl"><span>Bred &amp; fed</span><span class="ember">for performance.</span></h1>
-<div class="hero-grid">
-<div class="{hero_cls}">{hero_inner}
-<svg class="track" viewBox="0 0 800 450" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 400 C 120 380, 160 300, 260 310 S 420 360, 500 260 S 640 120, 820 90" fill="none" stroke="#f0643a" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/></svg>
-<span class="label" style="left:5%;bottom:9%">01 · Start of track</span>
-<span class="label hide-m" style="left:50%;top:40%">Nose down · on the line</span>
-<span class="label hot" style="right:4%;top:7%">Detector Dogs Australia · est. 2000</span>
+<p class="lead">Australian-made dog food, built by a breeder of working dogs and an animal nutritionist. Fed to sport, working and family dogs since 2015.</p>
+<div class="row" style="gap:18px;align-items:center"><a class="btn btn-ember btn-lg" href="shop.html">Shop now</a><a class="link" href="feeding-guide.html">Find my dog's food →</a></div>
+<p class="small muted">From $48 · Rated 9/10 by Petfood Reviews</p>
 </div>
-<div class="brief">
-<p class="lead">For 45 years Kris Kotsopoulos has bred and trained dogs that have to perform — detection, protection, sport. No food met his standard, so he built one with animal nutritionist Bill Wiadrowski.</p>
-<div class="row" style="gap:10px"><a class="btn btn-ember" href="shop.html">{CART_SVG}Shop the range</a><a class="btn btn-line" href="#formula">From $48 · 2.5 kg bag</a></div>
-<div class="stack"><p class="mono muted">Or find your dog's food</p>
-<div class="goal-grid">
-<a class="goal on" href="feeding-guide.html?goal=work"><span>Works or competes</span><span class="arr">→</span></a>
-<a class="goal" href="feeding-guide.html?goal=puppy"><span>Growing pup</span><span class="arr">→</span></a>
-<a class="goal" href="feeding-guide.html?goal=gut"><span>Sensitive gut or skin</span><span class="arr">→</span></a>
-<a class="goal" href="feeding-guide.html?goal=family"><span>Active family dog</span><span class="arr">→</span></a>
+<div class="{hero_cls} hero-shot">{hero_inner}
+<svg class="track" viewBox="0 0 800 450" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 420 C 120 400, 160 330, 260 340 S 420 380, 500 290 S 640 150, 820 120" fill="none" stroke="#f0643a" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/></svg>
 </div>
-<p class="small muted">Rated 9/10 by Petfood Reviews · 43 handlers, breeders &amp; owners on record</p></div>
-</div></div></div>
-<ul class="trust mt">
-<li><b>Free metro delivery</b><span>on orders over ${FREE_SHIP}</span></li><li><b>Palatability guarantee</b><span>80% of the bag back, refunded</span></li>
-<li><b>Australian made</b><span>97.2% Australian ingredients</span></li><li><b>Dispatched in 24 hrs</b><span>Australia-wide</span></li></ul>
-<div class="ticker steelfx mt" aria-label="Dogs fed Performadog"><div class="ticker-track">{tick}</div></div>
+</div></div>
 </section>
+{usp_bar()}
 
-{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-lg" style="max-width:12ch">Three feeds. One job each.</h2>
-<p class="muted" style="max-width:28em">Formulated with Bill Wiadrowski, animal nutritionist since 1986. 97.2% Australian ingredients. Real meat first. Price per day is worked out from the feeding table printed on the bag — bigger bags work out cheaper.</p></div>
+{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md" style="max-width:12ch">Three feeds. One job each.</h2>
+<p class="muted" style="max-width:28em">Formulated with Bill Wiadrowski, animal nutritionist since 1986. 97.2% Australian ingredients. Real meat first. Price per day is worked out from the feeding table printed on the bag. Bigger bags work out cheaper.</p></div>
 <div class="feeds">{feeds}</div>
 <div class="row between mt" style="border:1px solid var(--hair);border-radius:2px;padding:18px 20px;align-items:center"><p><strong>Purple Boost</strong> <span class="muted">· purple carrot, 9-strain probiotic and prebiotic topper. Add it to any bowl.</span></p><div class="row" style="gap:10px;align-items:center"><span style="font-weight:700">From $43</span><a class="btn btn-line" href="purple-boost.html">Shop now</a></div></div>""", theme='', sid='formula')}
+{needs_block()}
 
-{rail_section(2, 'Origin', f"""<div class="split split-wide"><h2 class="d d-lg">A dog let him down when it counted. He spent the next 40 years making sure it wouldn't happen again.</h2>
-<div class="stack" style="padding-top:8px"><p class="muted">Training wasn't enough. That sent Kris into genetics and breeding in 1982. Decades on, he'd learned two things make a performance dog: breeding and nutrition.</p>
-<p class="muted">When his sponsor's food changed and his dogs lost condition, he stopped looking for the right food and built it.</p>
-<a class="link" href="story.html">Read the full file →</a></div></div>
-<ol class="tl mt-l">{tl}</ol>
-<div class="strip mt-l">{strip}</div>
-<p class="small muted mt-s">Where Kris's detection teams work: the MCG, the Port of Melbourne, hospitals, major events. {tbc("Kris: confirm which of these dogs are Von Forell-bred / Performadog-fed")}</p>""")}
+{rail_section(2, 'Origin', f"""<div class="split split-wide" style="align-items:end"><h2 class="d d-md" style="max-width:16ch">A dog let him down when it counted.</h2>
+<div class="stack"><p class="muted">Training wasn't enough, so Kris turned to breeding. Decades on, he'd learned two things make a performance dog: breeding and nutrition. When his sponsor's food changed and his dogs lost condition, he built his own.</p>
+<a class="link" href="story.html">Read Kris's story →</a></div></div>
+<div class="mt">{timeline()}</div>""", theme='alt')}
 
-{rail_section(3, 'Evidence', f"""<div class="split"><div class="stack-l"><h2 class="d d-lg">Don't take our word for it. Take the lab's.</h2>
-<p class="muted lead">One working dog. The same blood panel, twelve months apart, on nothing but Performadog. Every number published — and labelled for what it is: one dog's results.</p>
+{rail_section(3, 'Evidence', f"""<div class="split"><div class="stack-l"><h2 class="d d-md">Don't take our word for it. Take the lab's.</h2>
+<p class="muted lead">One working dog. The same blood panel, twelve months apart, on nothing but Performadog. Every number published, and labelled for what it is: one dog's results.</p>
 <a class="btn btn-ember" href="case-study.html" style="align-self:flex-start">Read the full report</a></div>
 {lab_sheet()}</div>""", theme='steelfx')}
 
 <section class="sec" style="border-top:1px solid var(--hair)"><div class="wrap"><div class="rail pad"><span class="node" style="top:80px"></span>
 <p class="mono file steel">File 04 · The dogs</p>
-<div class="row between" style="margin-bottom:40px"><h2 class="d d-lg" style="max-width:18ch">Fed to dogs with a job&nbsp;to&nbsp;do.</h2><a class="link" href="reviews.html">Read all 43 →</a></div>
+<div class="row between" style="margin-bottom:40px"><h2 class="d d-md" style="max-width:18ch">Fed to dogs with a job&nbsp;to&nbsp;do.</h2><a class="link" href="reviews.html">Read all 43 →</a></div>
 <div class="g3">{dogs}</div>
 </div></div></section>
 
 {rail_section(5, 'The difference', f"""<h2 class="d d-md" style="max-width:20ch;margin-bottom:32px">What sets it apart from supermarket "premium"</h2>
 <div class="tbl-wrap"><table class="tbl stk"><thead><tr><th></th><th>Performadog</th><th>Typical supermarket premium</th></tr></thead><tbody>
-<tr><td><strong>Built for</strong></td><td class="us" data-l="Performadog">Working dogs first — fed in the Von Forell kennel since 2015</td><td data-l="Typical supermarket premium">The average pet</td></tr>
+<tr><td><strong>Built for</strong></td><td class="us" data-l="Performadog">Working dogs first. Fed in the Von Forell kennel since 2015</td><td data-l="Typical supermarket premium">The average pet</td></tr>
 <tr><td><strong>Who formulated it</strong></td><td class="us" data-l="Performadog">Bill Wiadrowski, animal nutritionist since 1986</td><td data-l="Typical supermarket premium">Usually unnamed</td></tr>
 <tr><td><strong>Where it comes from</strong></td><td class="us" data-l="Performadog">97.2% Australian ingredients · Australian made &amp; owned</td><td data-l="Typical supermarket premium">Often imported</td></tr>
 <tr><td><strong>First ingredient</strong></td><td class="us" data-l="Performadog">Turkey, lamb or wild-caught tuna</td><td data-l="Typical supermarket premium">Often meat meal or by-products</td></tr>
@@ -309,7 +349,7 @@ def home():
 </tbody></table></div>""", theme='')}
 
 {cta_band()}'''
-    return page('index.html', 'Performadog — Bred & fed for performance', 'Performance dog food built by a working-dog breeder and an animal nutritionist. Australian made.', body)
+    return page('index.html', 'Performadog | Bred & fed for performance', 'Performance dog food built by a working-dog breeder and an animal nutritionist. Australian made.', body)
 
 
 def shop():
@@ -323,7 +363,7 @@ def shop():
 <div class="g3" id="grid">{dog}</div>
 <figure class="mt-l">{pic('range', '', 'ratio-169')}<figcaption class="mono muted mt-s">The full Performadog and iPurr range</figcaption></figure>
 <div class="tbc-block mt"><p class="mono">Pending from Kris</p><p class="small">Bundles (which foods, sizes and price) and the 20 kg bag price. Both are built into the store and waiting on numbers.</p></div>''') + compare_block() + cta_band()
-    return page('shop.html', 'Shop — Performadog', 'Performadog dog food, Purple Boost and iPurr cat food.', body, 'shop.html')
+    return page('shop.html', 'Shop | Performadog', 'Performadog dog food, Purple Boost and iPurr cat food.', body, 'shop.html')
 
 
 def compare_block():
@@ -331,7 +371,7 @@ def compare_block():
     th = ''.join(f'<th>{E(p["name"])}</th>' for p in a)
     rows = [('Best for', [p['job'] for p in a]), ('Protein / fat', [f'{p["protein"]}% / {p["fat"]}%' for p in a]),
             ('Main protein', ['Turkey + lamb', 'Wild tuna + lamb', 'Lamb + wild tuna']),
-            ('Grain free', ['Yes', 'No — rice, oat groats', 'No — rice, oat groats']), ('Chicken free', ['Yes (poultry oil)', 'Yes', 'Yes']),
+            ('Grain free', ['Yes', 'No (rice, oat groats)', 'No (rice, oat groats)']), ('Chicken free', ['Yes (poultry oil)', 'Yes', 'Yes']),
             ('15 kg bag', [money(p['sizes'][2][2]) for p in a])]
     body = ''.join(f'<tr><td><strong>{k}</strong></td>' + ''.join(f'<td data-l="{E(p["name"])}">{E(v)}</td>' for p, v in zip(a, vals)) + '</tr>' for k, vals in rows)
     return plain_section(f'<h2 class="h2" style="margin-bottom:24px">Compare the dog foods</h2><div class="tbl-wrap"><table class="tbl stk"><thead><tr><th></th>{th}</tr></thead><tbody>{body}</tbody></table></div>', 'alt')
@@ -351,7 +391,7 @@ def product(p):
     pd = per_day(default[2], 15) if (is_dog and p['slug'] != 'puppy-lamb-and-fish') else None
     perday = f'<p class="small muted center">Works out at <strong class="ember" data-pdp-pd>{money(round(pday(p, default[1], default[2]), 2))}/day</strong> for a {basis(p)[1]}, from the feeding table on the bag</p>'
     analysis = ''.join(f'<tr><td>{k}</td><td style="text-align:right;font-weight:700">{v}</td></tr>' for k, v in p['analysis'])
-    an_note = f'<p class="small mt-s">{tbc("Figures from the current website — Kris to confirm against the bag")}</p>' if p.get('analysis_tbc') else ''
+    an_note = f'<p class="small mt-s">{tbc("Figures from the current website. Kris to confirm against the bag")}</p>' if p.get('analysis_tbc') else ''
     ings = ''
     if p.get('ings'):
         li = ''.join(f'<li class="{"top" if i < 5 else ""}">' + (f'<a href="{ing_link(x)}">{E(x)}</a>' if ing_link(x) else E(x)) + '</li>' for i, x in enumerate(p['ings']))
@@ -408,7 +448,7 @@ def product(p):
 <p class="small" data-postcode-out>Metro: free over ${FREE_SHIP}. Regional: freight shown before you pay.</p></div>
 <ul class="ticks"><li>Australian made &amp; owned</li><li>Palatability guarantee</li><li>Dispatched within 24 hrs</li><li>No chicken</li></ul>
 </div></div></div></section>
-<div class="sticky-atc" data-sticky-atc><div class="wrap"><img src="assets/img/product/{p["img"]}" alt=""><div class="sa-txt"><b>{E(p["name"])}</b><span data-sa-price>{money(default[2])} · {default[0]}</span></div><button class="btn btn-ember" type="button" data-sa-add>Add to cart</button></div></div>
+<div class="sticky-atc" data-sticky-atc hidden><div class="wrap"><img src="assets/img/product/{p["img"]}" alt=""><div class="sa-txt"><b>{E(p["name"])}</b><span data-sa-price>{money(default[2])} · {default[0]}</span></div><button class="btn btn-ember" type="button" data-sa-add>Add to cart</button></div></div>
 {big_spec}
 <section class="sec"><div class="wrap pad"><div class="split">
 <div class="stack-l">
@@ -422,7 +462,7 @@ def product(p):
 {('' if p['slug'] == 'purple-boost' else plain_section(f"""<div class="row between" style="align-items:center"><div class="row" style="align-items:center;gap:20px"><img src="assets/img/product/purple_boost_3-cut.webp" alt="Purple Boost" style="height:120px;width:auto"><div class="stack" style="gap:6px"><p class="mono steel">Add to this bowl</p><h2 class="h2">Purple Boost</h2><p class="muted small">Purple carrot, 9-strain probiotic and prebiotic. From $43.</p></div></div><div class="row" style="gap:10px"><button class="btn btn-ember" type="button" data-quick-add data-id="purple-boost" data-name="Purple Boost" data-size="180 g" data-price="43" data-img="assets/img/product/purple_boost_3-cut.webp">{CART_SVG}Add · $43</button><a class="btn btn-line" href="purple-boost.html">Shop now</a></div></div>""", '', 'pad-s'))}
 {faq_block(product_faqs(p))}
 {cta_band()}'''
-    return page(f'{p["slug"]}.html', f'{p["full"]} — Performadog', p['blurb'], body, 'shop.html')
+    return page(f'{p["slug"]}.html', f'{p["full"]} | Performadog', p['blurb'], body, 'shop.html')
 
 
 def product_faqs(p):
@@ -431,7 +471,7 @@ def product_faqs(p):
             ('What if my dog won\'t eat it?', 'Return the bag at least 80% full with your invoice and we\'ll refund you. That\'s the palatability guarantee.'),
             ('Do you deliver to me?', f'Australia-wide. Metro orders over ${FREE_SHIP} ship free; regional freight is shown before you pay. Most orders leave within 24 hours.')]
     if p['kind'] == 'cat':
-        base[0] = ('How do I switch my cat over?', 'Mix it into the old food over 7–10 days. Cats can be fussy — go slower if needed.')
+        base[0] = ('How do I switch my cat over?', 'Mix it into the old food over 7–10 days. Cats can be fussy, so go slower if needed.')
     return base
 
 
@@ -442,9 +482,9 @@ def faq_block(items, title='Questions'):
 
 def story():
     tl = ''.join(f'<li><p class="yr">{y}</p><p class="small muted" style="margin-top:6px">{x}</p></li>' for y, x in TIMELINE)
-    chapters = [('01', 'A dog let him down when it counted', 'Kris had trained the dog well. In a real situation it still didn\'t have the courage or robustness the job needed. Training alone wasn\'t enough — and that sent him into genetics and breeding in 1982.'),
+    chapters = [('01', 'A dog let him down when it counted', 'Kris had trained the dog well. In a real situation it still didn\'t have the courage or robustness the job needed. Training alone wasn\'t enough, and that sent him into genetics and breeding in 1982.'),
                 ('02', 'Two pillars make a performance dog', 'Years of breeding taught him that selection and nutrition carry a performance animal. If we ask dogs to work like athletes, we have to feed them like athletes.'),
-                ('03', 'No food met the standard', 'Pro Plan sponsored his kennel for six years. When production moved, his dogs started losing condition — and nothing else on the shelf did what he needed.'),
+                ('03', 'No food met the standard', 'Pro Plan sponsored his kennel for six years. When production moved, his dogs started losing condition, and nothing else on the shelf did what he needed.'),
                 ('04', 'So he built it', 'With animal nutritionist Bill Wiadrowski, Kris developed the food he wanted for his own dogs and fed it to his kennel from 2015. It worked, the trainers and breeders around him asked for it, and Performadog became available to everyone.')]
     ch = ''.join(f'''<article class="row" style="gap:20px 48px;align-items:flex-start"><p class="d ember" style="font-size:72px;flex:0 0 110px">{n}</p>
 <div class="stack" style="flex:1 1 420px;min-width:0"><h2 class="h2">{h}</h2><p class="muted">{b}</p></div></article>''' for n, h, b in chapters)
@@ -456,10 +496,10 @@ def story():
 <blockquote class="d d-sm" style="margin:0;border-top:2px solid var(--ink);padding-top:24px;text-transform:none;font-weight:700;font-size:clamp(28px,3.4vw,44px);line-height:1.05">“If we are asking dogs to perform at a high level, we are essentially asking them to function like athletes.”<span class="mono muted" style="display:block;margin-top:14px;font-weight:500">Kris Kotsopoulos · {tbc("confirm wording")}</span></blockquote>
 </div></div></section>
 <section class="sec alt"><div class="wrap pad"><div class="split split-wide" style="align-items:center"><div class="stack-l"><p class="mono steel">Detector Dogs Australia</p><h2 class="d d-md">Dogs that work where it matters</h2>
-<p class="muted">Kris co-founded Detector Dogs Australia in 2000. Its teams search venues like the MCG and Marvel Stadium, the Port of Melbourne, hospitals and major events — and Kris has been interviewed by SBS and Channel 9 about the work.</p>
+<p class="muted">Kris co-founded Detector Dogs Australia in 2000. Its teams search venues like the MCG and Marvel Stadium, the Port of Melbourne, hospitals and major events. Kris has been interviewed by SBS and Channel 9 about the work.</p>
 <p class="small muted">{tbc("NFL letter (Shannon Bodley, NFL Security) goes here once Kris has written permission")}</p></div>{pic('kris_sbs', '', 'ratio-11')}</div>
 <div class="strip mt-l">{''.join(f'<figure>{pic(s, "", "ratio-43")}<figcaption class="mono muted">{c}</figcaption></figure>' for s, c in (('dda1', 'MCG'), ('dda2', 'Port of Melbourne'), ('dda5', 'Grand Slam Oval'), ('dda4', 'Rubble search')))}</div></div></section>
-{rail_section(1, '45 years with working dogs', f'<h2 class="d d-lg" style="max-width:16ch;margin-bottom:40px">From one Dobermann to Detector Dogs Australia</h2><ol class="tl">{tl}</ol><p class="small muted mt">{tbc("Kris to sign off every date")} — his own sites give 1980 and 1981 for the first Dobermann.</p>')}
+{rail_section(1, '45 years with working dogs', f'<h2 class="d d-md" style="max-width:18ch;margin-bottom:32px">From one Dobermann to Detector Dogs Australia</h2>{timeline()}<p class="small muted mt">{tbc("Kris to sign off every date")}, his own sites give 1980 and 1981 for the first Dobermann.</p>')}
 <section class="sec"><div class="wrap pad"><div class="g2">
 <article class="stack">{pic('bill', 'Photo: Bill Wiadrowski', 'ratio-43')}<p class="mono steel">The nutritionist</p><h2 class="h2">Bill Wiadrowski</h2>
 <p class="muted">Animal nutritionist designing dog and cat diets since 1986, and the mind behind Nutrient Ramping. Kris and Bill have built Performadog together since 2018. {tbc("Qualifications")}</p><a class="link" href="science.html#bill">Watch Bill answer 41 questions →</a></article>
@@ -468,11 +508,11 @@ def story():
 </div>
 </div></section>
 {cta_band("Feed your dog the way Kris feeds his.")}'''
-    return page('story.html', 'Our story — Performadog', 'Kris Kotsopoulos, 45 years of working dogs, and the food he built for his own kennel.', body, 'story.html')
+    return page('story.html', 'Our story | Performadog', 'Kris Kotsopoulos, 45 years of working dogs, and the food he built for his own kennel.', body, 'story.html')
 
 
 def science():
-    body = page_head('The science', ['Built like', 'an athlete\'s diet'], 'How the food is formulated, what it is made from, and the evidence we can actually show you — including where it stops.') + f'''
+    body = page_head('The science', ['Built like', 'an athlete\'s diet'], 'How the food is formulated, what it is made from, and the evidence we can actually show you, including where it stops.') + f'''
 {rail_section(1, 'Nutrient Ramping', f"""<div class="split split-wide"><div class="stack"><h2 class="d d-md">Bill Wiadrowski's method</h2>
 <p class="muted lead">Bill has designed dog and cat diets since 1986. Nutrient Ramping is the approach behind every Performadog formula. {tbc("Bill: a plain-English definition, 2–3 sentences")}</p></div>
 <div class="stack">{video_card(VIDEOS[0]) if VIDEOS else pic('bill', 'Video', 'ratio-169')}</div></div>
@@ -482,23 +522,23 @@ def science():
 <div class="stack" style="border-top:2px solid var(--ink);padding-top:18px"><p class="mono muted">03 · Manufacture</p><h3 class="h3">Made in Australia, HACCP &amp; GMP</h3><p class="muted">Preserved with vitamin E and rosemary. Six-layer resealable bag. {tbc("Manufacturer details Kris is happy to show")}</p></div>
 </div>""")}
 {rail_section(2, 'Gut health', f"""<div class="split"><div class="stack"><h2 class="d d-md">The gut does the work</h2>
-<p class="muted">Kelp, yeast extract and Yucca schidigera are in every formula for intestinal health. Purple Boost adds a nine-strain probiotic (134M CFU per gram), a prebiotic yeast fraction and purple carrot — 13 kg of carrots in every kilo of powder.</p>
+<p class="muted">Kelp, yeast extract and Yucca schidigera are in every formula for intestinal health. Purple Boost adds a nine-strain probiotic (134M CFU per gram), a prebiotic yeast fraction and purple carrot: 13 kg of carrots in every kilo of powder.</p>
 <a class="link" href="purple-boost.html">About Purple Boost →</a></div>
 <div class="notice">We don't make disease claims for Purple Boost. The old site's cancer and weight-loss statements came from a rat study and have been left off this site on purpose.</div></div>""", theme='')}
 {rail_section(3, 'Evidence', f"""<div class="split"><div class="stack-l"><h2 class="d d-md">One dog, two lab panels, one year apart</h2>
-<p class="muted">The first published evidence on the site: a working dog's full blood panel before and after twelve months on Performadog. A documented case — not a clinical trial — and written up that way.</p>
+<p class="muted">The first published evidence on the site: a working dog's full blood panel before and after twelve months on Performadog. A documented case, not a clinical trial, and written up that way.</p>
 <a class="btn btn-ember" href="case-study.html" style="align-self:flex-start">Read the case study</a></div>{lab_sheet()}</div>""")}
 <section class="sec" id="bill"><div class="wrap pad"><div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ask Bill</p><h2 class="h2">41 questions, answered on camera</h2></div><p class="muted" style="max-width:26em">Bill's Q&amp;A library from the current site, carried across: sourcing, manufacturing, raw vs dry, the microbiome and more.</p></div>
 <div class="g4">{''.join(video_card(v) for v in VIDEOS[:8])}</div>
 <a class="btn btn-line mt" href="library.html#videos">All {len(VIDEOS)} answers →</a></div></section>
 {cta_band()}'''
-    return page('science.html', 'The science — Performadog', 'Nutrient Ramping, gut health and the published lab case study.', body, 'science.html')
+    return page('science.html', 'The science | Performadog', 'Nutrient Ramping, gut health and the published lab case study.', body, 'science.html')
 
 
 def case_study():
     rows = ''.join(f'''<div class="mrow"><div><p class="mono steel">{m} · {u}</p><p class="small muted" style="margin-top:4px">{w}</p></div>
 <div class="mbar" aria-hidden="true"><div class="axis"></div><div class="rng"></div></div>
-<div class="mvals"><span class="b">—</span><span class="muted">→</span><span class="a">—</span></div></div>''' for m, u, w in MARKERS)
+<div class="mvals"><span class="b">TBC</span><span class="muted">→</span><span class="a">TBC</span></div></div>''' for m, u, w in MARKERS)
     body = f'''<section class="sec alt"><div class="wrap" style="padding-top:56px;padding-bottom:40px">
 <p class="mono steel" style="margin-bottom:20px">The science / Case study 01</p>
 <h1 class="d d-lg" style="max-width:15ch">Twelve months on Performadog, in one dog's bloodwork</h1>
@@ -509,17 +549,17 @@ def case_study():
 <div class="wrap pad"><div class="row between" style="margin-bottom:12px"><h2 class="h2">The results</h2>
 <p class="mono muted" style="display:flex;gap:18px;flex-wrap:wrap"><span>○ {tbc("Date 1")}</span><span>● {tbc("Date 2")}</span><span><span style="display:inline-block;width:22px;height:10px;background:var(--band);vertical-align:middle"></span> Reference range</span></p></div>
 <div style="border-top:1px solid var(--hair)">{rows}</div>
-<div class="tbc-block mt"><p class="mono">What we need</p><p class="small">The two lab reports (a phone photo is fine). That gives every value, unit, reference range, the lab's name and both dates — the page fills itself from there.</p></div></div></section>
+<div class="tbc-block mt"><p class="mono">What we need</p><p class="small">The two lab reports (a phone photo is fine). That gives every value, unit, reference range, the lab's name and both dates. The page fills itself from there.</p></div></div></section>
 <section class="sec"><div class="wrap pad"><div class="split">
-<div class="stack"><p class="mono steel">What it shows — and what it doesn't</p><h2 class="h2">One dog's documented results. Not a promise for every dog.</h2>
+<div class="stack"><p class="mono steel">What it shows, and what it doesn't</p><h2 class="h2">One dog's documented results. Not a promise for every dog.</h2>
 <p class="muted">This is a single dog, not a controlled trial. Diet, training, age and health all affect bloodwork, so we can't say the food alone caused these changes. We publish the full reports so you and your vet can read them yourselves.</p></div>
 <div class="stack"><p class="mono muted">Bill Wiadrowski, animal nutritionist</p><p class="h2" style="font-size:22px">{tbc("Bill's plain-English read of the results")}</p>{pic('bill', 'Video: Bill walks through the two panels', 'ratio-169')}</div>
 </div>
 <div class="g2 mt-l"><div class="stack"><h3 class="h3">How it was done</h3><ol class="muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px"><li>Baseline panel taken by {tbc("[vet clinic]")}, analysed by {tbc("[lab]")}.</li><li>The dog ate Performadog {tbc("[food]")} as its only diet for 12 months, with normal training.</li><li>The same panel repeated at the same lab.</li></ol></div>
-<div class="stack"><h3 class="h3">Read the reports</h3><a class="btn btn-line" href="#">Panel 1 (PDF) · {tbc("date")}</a><a class="btn btn-line" href="#">Panel 2 (PDF) · {tbc("date")}</a><p class="small muted">Got your own dog's bloodwork on Performadog? <a href="contact.html">Tell us</a> — we'd like to add more dogs.</p></div></div>
+<div class="stack"><h3 class="h3">Read the reports</h3><a class="btn btn-line" href="#">Panel 1 (PDF) · {tbc("date")}</a><a class="btn btn-line" href="#">Panel 2 (PDF) · {tbc("date")}</a><p class="small muted">Got your own dog's bloodwork on Performadog? <a href="contact.html">Tell us</a>, we'd like to add more dogs.</p></div></div>
 </div></section>
 {cta_band("See what your dog should eat.")}'''
-    return page('case-study.html', 'Lab case study — Performadog', 'One working dog, the same blood panel twelve months apart.', body, 'science.html')
+    return page('case-study.html', 'Lab case study | Performadog', 'One working dog, the same blood panel twelve months apart.', body, 'science.html')
 
 
 def ingredients():
@@ -537,17 +577,17 @@ def ingredients():
     rows = ''.join(f'<tr><td><strong>{a}</strong></td><td>{b}</td><td class="muted">{c}</td></tr>' for a, b, c in sources)
     body = page_head('Ingredients', ['Nothing', 'to hide'], '97.2% Australian ingredients. Human-grade meat from approved regional facilities. Here is every formula, ingredient by ingredient.') + f'''
 {plain_section(f'<div class="split split-narrow"><div class="stack-l"><h2 class="d d-md">Every formula</h2>{pic("ingredients", "Flat-lay: turkey, lamb, wild tuna, lupins, kelp", "ratio-11")}</div><div>{blocks}</div></div>', '')}
-{plain_section(f'<h2 class="h2" style="margin-bottom:20px">Where it comes from</h2><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ingredient</th><th>Source</th><th>Why it\'s there</th></tr></thead><tbody>{rows}</tbody></table></div><p class="small muted mt-s">{tbc("Kris: confirm origins — the more specific (state, farm), the stronger")}</p>', 'alt')}
+{plain_section(f'<h2 class="h2" style="margin-bottom:20px">Where it comes from</h2><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ingredient</th><th>Source</th><th>Why it\'s there</th></tr></thead><tbody>{rows}</tbody></table></div><p class="small muted mt-s">{tbc("Kris: confirm origins, the more specific (state, farm), the stronger")}</p>', 'alt')}
 {plain_section(f'<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ingredient library</p><h2 class="d d-md">Why each one is in the bag</h2></div><a class="link" href="library.html">The full library →</a></div><div class="lgrid">{"".join(lib_card(a) for a in LIB if a["kind"] == "ingredient")}</div>', 'alt') if LIB else ''}
 {plain_section('<div class="g3"><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No chicken in the dog range</h3><p class="muted">Turkey Grain Free uses poultry oil; the other formulas have no poultry at all.</p></div><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No gluten, GMOs or dairy</h3><p class="muted">As printed on the bag.</p></div><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No artificial preservatives</h3><p class="muted">Vitamin E and rosemary oil keep it fresh in a six-layer bag.</p></div></div>', '')}
 {cta_band()}'''
-    return page('ingredients.html', 'Ingredients — Performadog', 'Every Performadog ingredient, formula by formula.', body)
+    return page('ingredients.html', 'Ingredients | Performadog', 'Every Performadog ingredient, formula by formula.', body)
 
 
 def feeding():
     rows = ''.join(f'<tr><td>{w}</td><td>{g}</td></tr>' for w, g in BAG_TABLE)
     seg = lambda grp, opts: ''.join(f'<button class="chip" type="button" data-set="{grp}" data-val="{v}" aria-pressed="false">{t}</button>' for v, t in opts)
-    body = page_head('Feeding guide', ['Your dog\'s', 'plan'], 'Four questions. We\'ll tell you which food, how much a day, how long a bag lasts and what it costs — worked out from the table printed on the bag.') + f'''
+    body = page_head('Feeding guide', ['Your dog\'s', 'plan'], 'Four questions. We\'ll tell you which food, how much a day, how long a bag lasts and what it costs, worked out from the table printed on the bag.') + f'''
 <section class="sec"><div class="wrap pad"><div class="calc" data-calc>
 <div class="stack-l">
 <div class="stack" style="gap:10px"><label class="lbl" for="cw">1 · Weight <span data-cw style="color:var(--ink);font-weight:600"></span></label><input id="cw" type="range" min="2" max="60" step="1" value="30"></div>
@@ -562,22 +602,22 @@ def feeding():
 <a data-o-food-link href="#" style="text-decoration:none"><p class="d d-md" data-o-food style="color:#f2eee6"></p></a>
 <p class="big" data-o-g></p><p class="mono" style="margin-top:-8px">per day · <span data-o-meals></span></p>
 <div class="grid"><div><p class="n" data-o-days></p><p class="mono" style="opacity:.8">15 kg bag lasts</p></div><div><p class="n" data-o-cost style="color:#f0643a"></p><p class="mono" style="opacity:.8">per day</p></div></div>
-<p class="small" style="opacity:.85">Subscribe and we'll send the next bag <strong data-o-every></strong> — before this one runs out.</p>
+<p class="small" style="opacity:.85">Subscribe and we'll send the next bag <strong data-o-every></strong>, before this one runs out.</p>
 <button class="btn btn-ember btn-block" type="button" data-calc-add>{CART_SVG}<span data-calc-add-label>Add 15 kg to cart</span></button><a class="btn btn-line btn-block" data-o-food-link href="#" style="color:#f2eee6;border-color:#c3c8bf">Shop now</a>
 </div></div></div></section>
 {plain_section(f'<div class="g2"><div class="stack"><h2 class="h2">The bag table</h2><div class="tbl-wrap"><table class="tbl" style="min-width:0"><thead><tr><th>Dog weight</th><th>Per day (adult)</th></tr></thead><tbody>{rows}</tbody></table></div></div><div class="stack"><h2 class="h2">Switching over: 10 days</h2><ol class="muted" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px"><li><strong style="color:var(--ink)">Days 1–3:</strong> about 25% Performadog, 75% old food.</li><li><strong style="color:var(--ink)">Days 4–6:</strong> half and half.</li><li><strong style="color:var(--ink)">Days 7–9:</strong> about 75% Performadog.</li><li><strong style="color:var(--ink)">Day 10:</strong> all Performadog. Split into two meals.</li></ol><p class="small muted">Sensitive gut? Take it slower and add Purple Boost from day one.</p></div></div>', 'alt')}
 {cta_band("Feed it to your dog.")}'''
-    return page('feeding-guide.html', 'Feeding guide — Performadog', 'Work out which Performadog food your dog needs, how much a day, and what it costs.', body, 'feeding-guide.html')
+    return page('feeding-guide.html', 'Feeding guide | Performadog', 'Work out which Performadog food your dog needs, how much a day, and what it costs.', body, 'feeding-guide.html')
 
 
 def reviews():
     cards = ''.join(tcard(t) for t in T)
     t = {x['id']: x for x in T}
     dogs = (dogcard(t['kern'], 'Caesar', 'Dobermann · IGP 3', 'Video to film') + dogcard(t['allgemein'], 'Rolex', 'Rottweiler · 20 km', 'Video to film') + dogcard(t['craig'], 'SAR team', 'Search &amp; rescue', 'Video to film'))
-    body = page_head('Reviews', ['Handlers, breeders', '&amp; owners'], f'{len(T)} of the people feeding Performadog, in their own words — from the original website. Where someone sells the food or owns a Von Forell dog, we say so.',
+    body = page_head('Reviews', ['Handlers, breeders', '&amp; owners'], f'{len(T)} of the people feeding Performadog, in their own words, from the original website. Where someone sells the food or owns a Von Forell dog, we say so.',
                      aside='<p class="small muted">Rated 9/10 by Petfood Reviews (Turkey Grain Free, user score 4.58 from 126 votes).</p>') + f'''
 {plain_section(f'<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Long reads</p><h2 class="d d-md">Interviews with handlers</h2></div><a class="link" href="library.html">The library →</a></div><div class="lgrid">{"".join(lib_card(a) for a in LIB if a["kind"] == "interview")}</div>', '') if LIB else ''}
-<section class="sec alt"><div class="wrap pad"><div class="row between" style="margin-bottom:28px"><h2 class="d d-md">On camera</h2><p class="muted" style="max-width:28em">Short phone interviews with handlers and owners — dog, job, result. {tbc("20–30 to film")}</p></div><div class="g3">{dogs}</div></div></section>
+<section class="sec alt"><div class="wrap pad"><div class="row between" style="margin-bottom:28px"><h2 class="d d-md">On camera</h2><p class="muted" style="max-width:28em">Short phone interviews with handlers and owners, dog, job, result. {tbc("20–30 to film")}</p></div><div class="g3">{dogs}</div></div></section>
 <section class="sec"><div class="wrap pad">
 <div class="chips" data-filter-group data-target="#tgrid" style="margin-bottom:28px">
 <button class="chip" data-filter="all" aria-pressed="true">All</button><button class="chip" data-filter="working" aria-pressed="false">Working dogs</button><button class="chip" data-filter="sport" aria-pressed="false">Sport</button>
@@ -596,7 +636,7 @@ def reviews():
 <label class="small" style="display:flex;gap:10px;align-items:flex-start"><input type="checkbox" style="margin-top:5px"> You can publish my words and photo on the Performadog website.</label>
 <button class="btn btn-ember" type="submit">Send my story</button><p class="small muted" data-form-out></p></form></div></div></section>
 {cta_band()}'''
-    return page('reviews.html', 'Reviews — Performadog', 'What handlers, breeders and owners say about Performadog.', body, 'reviews.html')
+    return page('reviews.html', 'Reviews | Performadog', 'What handlers, breeders and owners say about Performadog.', body, 'reviews.html')
 
 
 def where_to_buy():
@@ -605,9 +645,9 @@ def where_to_buy():
 <div class="stack card" style="padding:28px"><p class="mono steel">Stockists</p><h2 class="h2">Near you</h2>
 <div class="tbl-wrap"><table class="tbl" style="min-width:0"><thead><tr><th>Stockist</th><th>Area</th></tr></thead><tbody>
 <tr><td>{tbc("Keryn Mahoney (distributor)")}</td><td>Tasmania</td></tr><tr><td>{tbc("Peter Tsamtsikas (distributor)")}</td><td>Adelaide</td></tr><tr><td>{tbc("Michelle's Dog Behaviour & Training")}</td><td>Yarra Valley VIC</td></tr><tr><td>{tbc("New Zealand importer")}</td><td>New Zealand</td></tr></tbody></table></div>
-<p class="small">{tbc("Kris: send the current stockist list — or say it's direct only and this table comes out")}</p></div></div>
+<p class="small">{tbc("Kris: send the current stockist list, or say it's direct only and this table comes out")}</p></div></div>
 <div class="tbc-block mt"><p class="mono">For breeders, kennels &amp; trainers</p><p class="small">Bulk and kennel pricing for breeders and trainers who feed several dogs or puppy packs for new owners. {tbc("Kris: is there a trade price?")}</p></div>''', '') + cta_band()
-    return page('where-to-buy.html', 'Where to buy — Performadog', 'Buy Performadog online or from a stockist.', body)
+    return page('where-to-buy.html', 'Where to buy | Performadog', 'Buy Performadog online or from a stockist.', body)
 
 
 def delivery():
@@ -619,21 +659,21 @@ def delivery():
 <tr><td><strong>Regional</strong></td><td data-l="Cost">{tbc("Surcharge by zone")} · shown before you pay</td><td data-l="Typical time">5–7 business days</td></tr>
 <tr><td><strong>Subscriptions</strong></td><td data-l="Cost">Free metro delivery on every order</td><td data-l="Typical time">Timed to your dog</td></tr></tbody></table></div>
 <p class="muted small">Orders leave within 24 hours by Australia Post or courier. PO Boxes are fine. Australia only.</p></div>
-<div class="ship-box" data-postcode style="align-self:start"><label class="lbl" for="pc2">Check your postcode</label><div class="field"><input id="pc2" inputmode="numeric" maxlength="4" placeholder="e.g. 4000"><button class="btn btn-ink" type="button" style="min-height:48px">Check</button></div><p class="small" data-postcode-out>We'll tell you if you're metro or regional.</p><p class="small muted">Preview logic — the real zones are set in Shopify.</p></div>
+<div class="ship-box" data-postcode style="align-self:start"><label class="lbl" for="pc2">Check your postcode</label><div class="field"><input id="pc2" inputmode="numeric" maxlength="4" placeholder="e.g. 4000"><button class="btn btn-ink" type="button" style="min-height:48px">Check</button></div><p class="small" data-postcode-out>We'll tell you if you're metro or regional.</p><p class="small muted">Preview logic, the real zones are set in Shopify.</p></div>
 </div>''', '') + plain_section(f'''<div class="split"><div class="stack-l"><p class="mono steel">Subscribe &amp; save</p><h2 class="d d-md">The next bag arrives before the last one runs out.</h2></div>
 <ul class="stack" style="margin:0;padding:0;list-style:none">
-<li><strong>{tbc("[X]%")} off every bag.</strong> <span class="muted">Timed to your dog's daily amount — the feeding guide works it out.</span></li>
+<li><strong>{tbc("[X]%")} off every bag.</strong> <span class="muted">Timed to your dog's daily amount. The feeding guide works it out.</span></li>
 <li><strong>Free metro delivery</strong> <span class="muted">on every subscription order.</span></li>
 <li><strong>Skip, pause or cancel online.</strong> <span class="muted">No lock-in, no fees, no phone call needed.</span></li>
 <li><strong>Change food or bag size</strong> <span class="muted">between orders.</span></li></ul></div>''', 'alt', sid='subscribe') + plain_section(f'''<div class="split"><div class="stack-l"><p class="mono steel">The guarantee</p><h2 class="d d-md">If your dog won't eat it, you get your money back.</h2></div>
 <div class="stack"><p class="muted">Return the bag at least 80% full, with your invoice, and we'll refund you. {tbc("Kris: confirm the window (e.g. 30 days) and whether it covers repeat orders")}</p><p class="small muted">Your rights under Australian Consumer Law apply on top of this guarantee.</p></div></div>''', '', sid='guarantee') + cta_band()
-    return page('delivery.html', 'Delivery, subscriptions & guarantee — Performadog', 'Delivery costs, subscriptions and the palatability guarantee.', body)
+    return page('delivery.html', 'Delivery, subscriptions & guarantee | Performadog', 'Delivery costs, subscriptions and the palatability guarantee.', body)
 
 
 def faq():
     groups = [('The food', [('Is it only for working dogs?', 'No. It was built to working-dog standards and plenty of active family dogs eat it. The feeding guide sets the right food and amount for your dog.'),
                             ('Which food should I choose?', 'Turkey Grain Free for dogs that work, train or compete. Ocean Fish for itchy skin, allergies or a sensitive stomach. Puppy Lamb &amp; Fish while they grow.'),
-                            ('Is it complete and balanced?', f'Yes — formulated to meet Australian and AAFCO nutrient standards. {tbc("Exact statement to confirm")}'),
+                            ('Is it complete and balanced?', f'Yes. Formulated to meet Australian and AAFCO nutrient standards. {tbc("Exact statement to confirm")}'),
                             ('Is there chicken in it?', 'The dog range has no chicken. Turkey Grain Free contains poultry oil. iPurr Kangaroo was made for cats that react to chicken.'),
                             ('Who makes it?', f'It is made in Australia under HACCP and GMP. {tbc("Manufacturer details Kris is happy to show")}')]),
               ('Feeding', [('How much do I feed?', 'Start from the bag table, or use the feeding guide. Most owners feed less by weight than their last food.'),
@@ -648,11 +688,11 @@ def faq():
         acc = ''.join(f'<details class="acc"><summary>{q}</summary><div class="body"><p>{a}</p></div></details>' for q, a in items)
         inner += f'<div class="split split-narrow" style="margin-bottom:56px"><h2 class="h2">{g}</h2><div>{acc}</div></div>'
     body = page_head('FAQ', ['Questions'], 'The ones we get asked most. Anything else, call Kris on ' + PHONE + '.') + plain_section(inner, '') + cta_band()
-    return page('faq.html', 'FAQ — Performadog', 'Common questions about Performadog food, feeding and delivery.', body)
+    return page('faq.html', 'FAQ | Performadog', 'Common questions about Performadog food, feeding and delivery.', body)
 
 
 def contact():
-    body = page_head('Contact', ['Talk to us'], f'Questions about your dog\'s diet are welcome — that\'s how most of our customers started. Call {PHONE} or send a message.') + plain_section(f'''
+    body = page_head('Contact', ['Talk to us'], f'Questions about your dog\'s diet are welcome. That\'s how most of our customers started. Call {PHONE} or send a message.') + plain_section(f'''
 <div class="split"><div class="stack-l">
 <div class="stack"><p class="mono steel">Phone</p><p class="d d-md">{PHONE}</p><p class="muted small">{tbc("Hours")}</p></div>
 <div class="stack"><p class="mono steel">Post</p><p>PO Box 372<br>Whittlesea VIC 3757</p></div>
@@ -663,7 +703,7 @@ def contact():
 <label class="lbl" for="d">Your dog (breed, age, what they do)</label><input class="input" id="d">
 <label class="lbl" for="m">Message</label><textarea class="input" id="m"></textarea>
 <button class="btn btn-ember" type="submit">Send</button><p class="small muted" data-form-out></p></form></div>''', '')
-    return page('contact.html', 'Contact — Performadog', 'Contact Performadog.', body)
+    return page('contact.html', 'Contact | Performadog', 'Contact Performadog.', body)
 
 
 def build():
@@ -724,12 +764,12 @@ def library_pages(lib, videos):
     if videos:
         vids = plain_section(f'''<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ask Bill</p><h2 class="d d-md">{len(videos)} questions, answered on camera</h2></div><p class="muted" style="max-width:26em">Bill Wiadrowski, animal nutritionist since 1986, on sourcing, manufacturing, raw vs dry, the microbiome and more.</p></div>
 <div class="g4">{"".join(video_card(v) for v in videos)}</div>''', 'alt', sid='videos')
-    body = page_head('The library', ['Everything', 'Kris &amp; Bill know'], f'{len(lib)} articles from the original Performadog site — every ingredient, nutrient, handler interview and Q&amp;A — rewritten into one place you can actually search.') + f'''
+    body = page_head('The library', ['Everything', 'Kris &amp; Bill know'], f'{len(lib)} articles from the original Performadog site: every ingredient, nutrient, handler interview and Q&amp;A, rewritten into one place you can actually search.') + f'''
 <section class="sec"><div class="wrap pad">
 <div class="row" style="margin-bottom:24px;align-items:center"><label class="sr" for="lq">Search the library</label><input class="input" id="lq" type="search" placeholder="Search: kelp, taurine, joints, puppies…" style="max-width:420px" data-lib-search></div>
 <div class="chips" data-filter-group data-target="#lgrid" style="margin-bottom:28px">{chips}</div>
 <div class="lgrid" id="lgrid">{cards}</div></div></section>{vids}{cta_band()}'''
-    out.append(page('library.html', 'The library — Performadog', 'Ingredients, nutrients, handler interviews and Bill Wiadrowski\'s Q&A.', body, 'library.html'))
+    out.append(page('library.html', 'The library | Performadog', 'Ingredients, nutrients, handler interviews and Bill Wiadrowski\'s Q&A.', body, 'library.html'))
     for a in lib:
         out.append(article(a, lib))
     return out
@@ -759,7 +799,7 @@ def article(a, lib):
     prods = related_products(a)
     pcards = ''.join(f'<a class="mini" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt=""><span><b>{E(p["name"])}</b><span class="small muted">From {money(min(s[2] for s in p["sizes"] if s[2]))} · {money(round(pday(p, default_size(p)[1], default_size(p)[2]), 2))}/day</span><span class="mono ember" style="font-size:11px;margin-top:4px">Shop now →</span></span></a>' for p in prods)
     words = len(a.get('body', '').split())
-    claims = (f'<div class="tbc-block" style="margin-bottom:28px"><p class="mono">Preview note — fix before launch</p><p class="small">This article makes health claims we can\'t support: {E(a.get("claims_note", ""))} We\'d rewrite those lines; the rest can stay.</p></div>' if a.get('claims') else '')
+    claims = (f'<div class="tbc-block" style="margin-bottom:28px"><p class="mono">Preview note: fix before launch</p><p class="small">This article makes health claims we can\'t support: {E(a.get("claims_note", ""))} We\'d rewrite those lines; the rest can stay.</p></div>' if a.get('claims') else '')
     body = f'''<section class="sec alt"><div class="wrap" style="padding-top:48px;padding-bottom:48px"><div style="max-width:880px">
 <p class="mono steel"><a href="library.html" style="text-decoration:none">Library</a> / {KIND.get(a["kind"], ("Notes",))[0]}</p>
 <h1 class="d d-lg" style="margin-top:18px;font-size:clamp(40px,5.6vw,80px)">{E(a["title"])}</h1>
@@ -771,7 +811,7 @@ def article(a, lib):
 <aside class="stack-l"><div class="stack"><p class="mono steel">Feed it</p>{pcards}</div>
 {('<div class="stack"><p class="mono steel">Read next</p>' + "".join(f'<a class="link" href="{r["file"]}">{E(r["title"])}</a>' for r in rel) + '</div>') if rel else ''}</aside>
 </div></div></section>{cta_band()}'''
-    return page(a['file'], f'{a["title"]} — Performadog library', a.get('summary', '')[:155], body, 'library.html')
+    return page(a['file'], f'{a["title"]} | Performadog library', a.get('summary', '')[:155], body, 'library.html')
 
 
 if __name__ == '__main__':

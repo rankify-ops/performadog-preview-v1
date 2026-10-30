@@ -8,15 +8,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_IMG = os.path.join(HERE, '..', 'assets', 'img', 'library')
 os.makedirs(OUT_IMG, exist_ok=True)
 KEEP = {'ingredient', 'nutrient', 'interview', 'nutritionist', 'health', 'brand'}
-RIGHTS = {'taurine': 'Written by Dr Jean Hofve — needs her permission',
-          'petfood-review': 'Reproduces Petfood Reviews\' text — quote and link instead'}
+RIGHTS = {'taurine': 'Written by Dr Jean Hofve: needs her permission',
+          'petfood-review': 'Reproduces Petfood Reviews\' text: quote and link instead'}
 recs = json.load(open(os.path.join(SRC, 'content.json')))
 lib, held = [], []
 for r in recs:
     if r['type'] != 'post' or r['kind'] not in KEEP:
         continue
     if r['slug'] in RIGHTS or 'lifewise' in (r['slug'] + r.get('body_text', '')[:400]).lower() and r['kind'] == 'interview' and 'kotsopoulos' in r['slug']:
-        held.append({'slug': r['slug'], 'title': r['title'], 'why': RIGHTS.get(r['slug'], 'Written by LifeWise Pet Nutrition, with their images — needs their permission')})
+        held.append({'slug': r['slug'], 'title': r['title'], 'why': RIGHTS.get(r['slug'], 'Written by LifeWise Pet Nutrition, with their images: needs their permission')})
         continue
     body = r.get('body_text', '').strip()
     body = re.sub(r'^#\s+.*\n+', '', body)  # drop a duplicated H1 title

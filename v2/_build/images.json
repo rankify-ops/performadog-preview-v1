@@ -1,8 +1,8 @@
 {
  "hero": {
-  "src": "assets/img/real/gsd-tracking.jpg",
-  "alt": "German Shepherd tracking on a long line, nose to the ground",
-  "pos": "50% 55%"
+  "src": "assets/img/real/hero-aframe.jpg",
+  "alt": "German Shepherd clearing an A-frame with a dumbbell",
+  "pos": "50% 40%"
  },
  "kris": {
   "src": "assets/img/real/kris-heeling-dobermann.jpg",

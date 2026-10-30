@@ -1,4 +1,4 @@
-/* Performadog v2 preview — small, dependency-free behaviours. */
+/* Performadog v2 preview, small, dependency-free behaviours. */
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -25,7 +25,7 @@
     });
   });
 
-  // Postcode demo (preview logic only — real zones live in Shopify)
+  // Postcode demo (preview logic only, real zones live in Shopify)
   var METRO = [[3000, 3207], [3335, 3341], [3427, 3429], [3750, 3810], [3910, 3920], [3926, 3944], [3975, 3978],
     [2000, 2234], [2555, 2574], [2740, 2786], [4000, 4207], [4300, 4305], [4500, 4519], [5000, 5199],
     [6000, 6199], [7000, 7099], [2600, 2620], [2900, 2914], [800, 832]];
@@ -41,7 +41,7 @@
       if (!z) { out.textContent = 'Enter a 4-digit postcode.'; return; }
       out.innerHTML = z === 'metro'
         ? '<strong>Metro area.</strong> Free delivery on orders over $150, otherwise a flat metro rate. Usually 2–4 business days.'
-        : '<strong>Regional area.</strong> We deliver here. A freight surcharge applies and is shown before you pay — no surprises at checkout. Usually 5–7 business days.';
+        : '<strong>Regional area.</strong> We deliver here. A freight surcharge applies and is shown before you pay. No surprises at checkout. Usually 5–7 business days.';
     }
     btn.addEventListener('click', run);
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); run(); } });
@@ -73,7 +73,7 @@
     });
   }
 
-  // Feeding calculator — anchored to the feeding table printed on the bag
+  // Feeding calculator, anchored to the feeding table printed on the bag
   var calc = $('[data-calc]');
   if (calc) {
     var CURVE = [[2, 45], [7.5, 95], [15, 125], [25, 160], [35, 200], [45, 250], [60, 310]];
@@ -128,7 +128,7 @@
 
   // Contact form (preview)
   $$('form[data-preview]').forEach(function (f) {
-    f.addEventListener('submit', function (e) { e.preventDefault(); var o = $('[data-form-out]', f); if (o) o.textContent = 'Preview only — on the live site this sends to the Performadog inbox.'; });
+    f.addEventListener('submit', function (e) { e.preventDefault(); var o = $('[data-form-out]', f); if (o) o.textContent = 'Preview only. On the live site this sends to the Performadog inbox.'; });
   });
 })();
 (function () {
@@ -158,8 +158,8 @@
   function save() { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} }
   function money(v) { return '$' + (Math.round(v * 100) / 100).toFixed(v % 1 ? 2 : 0); }
   var drawer = $('[data-cart]'), scrim = $('.cart-scrim');
-  function open() { if (!drawer) return; drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); scrim.hidden = false; }
-  function close() { if (!drawer) return; drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); scrim.hidden = true; }
+  function open() { if (!drawer) return; drawer.hidden = false; void drawer.offsetWidth; drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); scrim.hidden = false; }
+  function close() { if (!drawer) return; drawer.classList.remove('open'); setTimeout(function () { if (!drawer.classList.contains('open')) drawer.hidden = true; }, 300); drawer.setAttribute('aria-hidden', 'true'); scrim.hidden = true; }
   $$('[data-cart-open]').forEach(function (b) { b.addEventListener('click', open); });
   $$('[data-cart-close]').forEach(function (b) { b.addEventListener('click', close); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
@@ -191,7 +191,7 @@
     if (ex) ex.qty++; else cart.push({ id: item.id, name: item.name, size: item.size, price: +item.price, img: item.img, qty: 1 });
     save(); render(); open();
   }
-  var co = $('[data-checkout]'); if (co) co.addEventListener('click', function () { $('[data-checkout-msg]').textContent = 'Preview only — on the live site this goes to Shopify checkout.'; });
+  var co = $('[data-checkout]'); if (co) co.addEventListener('click', function () { $('[data-checkout-msg]').textContent = 'Preview only. On the live site this goes to Shopify checkout.'; });
   // Buy boxes
   $$('[data-buy]').forEach(function (bx) {
     var szs = $$('.sz', bx), bp = $('[data-bp]', bx), bpd = $('[data-bpd]', bx);
@@ -218,7 +218,7 @@
   }
   if (atc) {
     atc.addEventListener('click', pdpAdd);
-    var sa = $('[data-sticky-atc]'), saBtn = $('[data-sa-add]');
+    var sa = $('[data-sticky-atc]'), saBtn = $('[data-sa-add]'); if (sa) sa.hidden = false;
     if (saBtn) saBtn.addEventListener('click', pdpAdd);
     if (sa && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { sa.classList.toggle('on', !es[0].isIntersecting && es[0].boundingClientRect.top < 0); }).observe(atc);
   }
@@ -238,6 +238,7 @@
       ticking = false; var vh = innerHeight;
       steel.forEach(function (el) {
         if (el._hover) return;
+        if (el.classList.contains('hdr')) { el.style.setProperty('--sx', (50 + Math.sin(scrollY / 900) * 50).toFixed(2) + '%'); return; }
         var r = el.getBoundingClientRect(); if (r.bottom < -50 || r.top > vh + 50) return;
         var p = (vh - r.top) / (vh + r.height);
         el.style.setProperty('--sx', (100 - p * 100).toFixed(2) + '%');
@@ -250,4 +251,31 @@
       el.addEventListener('pointerleave', function () { el._hover = false; upd(); });
     });
   }
+})();
+
+/* v2.2: USP rotator (phones), interactive timeline, shop filter from URL */
+(function () {
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  $$('[data-usp]').forEach(function (ul) {
+    var li = $$('li', ul), i = 0; if (li.length < 2) return;
+    
+  });
+  $$('[data-tline]').forEach(function (tl) {
+    var ys = $$('.tl-y', tl), ps = $$('.tl-p', tl), fill = tl.querySelector('[data-tl-fill]'), cur = 0;
+    function go(n) {
+      cur = (n + ys.length) % ys.length;
+      ys.forEach(function (b, k) { b.setAttribute('aria-selected', k === cur ? 'true' : 'false'); b.tabIndex = k === cur ? 0 : -1; });
+      ps.forEach(function (p, k) { p.hidden = k !== cur; });
+      fill.style.width = (ys.length > 1 ? cur / (ys.length - 1) * 100 : 100) + '%';
+      var b = ys[cur], row = b.parentNode; row.scrollTo({ left: b.offsetLeft - row.clientWidth / 2 + b.clientWidth / 2, behavior: 'smooth' });
+    }
+    ys.forEach(function (b, k) { b.addEventListener('click', function () { go(k); }); });
+    tl.querySelector('[data-tl-prev]').addEventListener('click', function () { go(cur - 1); });
+    tl.querySelector('[data-tl-next]').addEventListener('click', function () { go(cur + 1); });
+    tl.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); });
+    go(0);
+  });
+  var h = location.hash.replace('#', '');
+  var map = { cats: 'cat', working: 'working', puppy: 'puppy', sensitive: 'sensitive', supplements: 'supplement' };
+  if (map[h]) { var chip = document.querySelector('[data-filter="' + map[h] + '"]'); if (chip) chip.click(); }
 })();
