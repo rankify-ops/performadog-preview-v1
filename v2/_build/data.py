@@ -174,6 +174,10 @@ T = [
     dict(id="mahoney", name="Keryn Mahoney", role="Tasmania", dog="Dobermanns & Dachshunds", tags="family sport",
          q="On a recent visit to the vet… he noted how good the four dogs teeth were, to quote him 'Whatever you are feeding them, keep feeding it'.",
          rel="Tasmanian distributor"),
+    dict(id="kawecki", name="Sue Kawecki", role="Obedience & tracking competitor · Melbourne", dog="German Shepherd", tags="sport",
+         q="My dog has been fed the food from a puppy to her adult life… her coat has always looked shiny and healthy."),
+    dict(id="scott", name="Vaughan Scott", role="Western Australia", dog="Von Forell German Shepherd", tags="family",
+         q="My dog has loads of energy and is always in excellent physical condition.", rel="Von Forell dog"),
     dict(id="mariettakis", name="Victoria Mariettakis", role="Owner", dog="Devon Rex · iPurr Kangaroo", tags="cat",
          q="My girl is now back at a healthy weight and her fur although already silky soft is even softer."),
 ]

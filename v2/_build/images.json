@@ -1,3 +1,148 @@
 {
-  "hero": {"src": "assets/img/stock/hero-shepherd.jpg", "alt": "German Shepherd running towards the camera", "stock": true, "pos": "50% 40%"}
+ "hero": {
+  "src": "assets/img/real/gsd-tracking.jpg",
+  "alt": "German Shepherd tracking on a long line, nose to the ground",
+  "pos": "50% 55%"
+ },
+ "kris": {
+  "src": "assets/img/real/kris-heeling-dobermann.jpg",
+  "alt": "Kris Kotsopoulos heeling a Von Forell Dobermann",
+  "pos": "50% 30%"
+ },
+ "kennel": {
+  "src": "assets/img/real/kris-and-tonia.jpg",
+  "alt": "Kris and Tonia Kotsopoulos",
+  "pos": "50% 30%"
+ },
+ "training": {
+  "src": "assets/img/real/training-field.jpg",
+  "alt": "Training field with timber blinds"
+ },
+ "dda1": {
+  "src": "assets/img/real/mcg-box-search.jpg",
+  "alt": "Detector Dogs Australia handler and German Shepherd searching a corporate box at the MCG"
+ },
+ "dda2": {
+  "src": "assets/img/real/port-truck-search.jpg",
+  "alt": "Detection dog searching a truck at the Port of Melbourne"
+ },
+ "dda3": {
+  "src": "assets/img/real/malinois-vehicle-search.jpg",
+  "alt": "Malinois searching an SUV"
+ },
+ "dda4": {
+  "src": "assets/img/real/gsd-rubble-search.jpg",
+  "alt": "German Shepherd searching rubble"
+ },
+ "dda5": {
+  "src": "assets/img/real/grand-slam-oval.jpg",
+  "alt": "Handler and German Shepherd at Grand Slam Oval"
+ },
+ "kris_sbs": {
+  "src": "assets/img/real/kris-sbs.jpg",
+  "alt": "Kris being interviewed by an SBS News crew"
+ },
+ "range": {
+  "src": "assets/img/real/range.jpg",
+  "alt": "The full Performadog and iPurr range on a table"
+ },
+ "tug": {
+  "src": "assets/img/real/gsd-down-tug.jpg",
+  "alt": "German Shepherd lying down with a tug"
+ },
+ "t-kern": {
+  "src": "assets/img/real/kris-kern-caesar.jpg",
+  "alt": "Kris and Dr Michael Kern with Caesar",
+  "big": true
+ },
+ "t-wilson": {
+  "src": "assets/img/real/t-wilson.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-allgemein": {
+  "src": "assets/img/real/t-allgemein.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-doward": {
+  "src": "assets/img/real/t-doward.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-mulhall": {
+  "src": "assets/img/real/t-mulhall.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-kawecki": {
+  "src": "assets/img/real/t-kawecki.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-jones-walker": {
+  "src": "assets/img/real/t-jones-walker.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-carrington": {
+  "src": "assets/img/real/t-carrington.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-devissar": {
+  "src": "assets/img/real/t-devissar.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-scott": {
+  "src": "assets/img/real/t-scott.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-lynn": {
+  "src": "assets/img/real/t-lynn.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-mahoney": {
+  "src": "assets/img/real/t-mahoney.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-buckland": {
+  "src": "assets/img/real/t-buckland.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-young": {
+  "src": "assets/img/real/t-young.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-marielle": {
+  "src": "assets/img/real/t-marielle.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-fazzolari": {
+  "src": "assets/img/real/t-fazzolari.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-romeo": {
+  "src": "assets/img/real/t-romeo.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-craig": {
+  "src": "assets/img/real/t-craig.jpg",
+  "alt": "",
+  "big": true
+ },
+ "t-wills": {
+  "src": "assets/img/real/t-wills.jpg",
+  "alt": "",
+  "big": true
+ }
 }

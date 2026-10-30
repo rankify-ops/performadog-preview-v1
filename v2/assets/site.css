@@ -332,3 +332,23 @@ textarea.input{height:auto;padding:12px 14px;min-height:140px}
 .vtitle{font-weight:600;font-size:15px;line-height:1.35}
 .vembed{position:relative;aspect-ratio:16/9;margin:24px 0}
 .vembed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:var(--r-sm)}
+
+.strip{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:900px){.strip{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
+.strip figure{margin:0;display:flex;flex-direction:column;gap:8px}
+.ing a{text-decoration:underline;text-decoration-color:var(--ember);text-underline-offset:3px}
+.split>*,.g2>*,.g3>*{min-width:0}
+input[type=file].input{width:100%}
+select.input{width:100%}
+@media (max-width:599px){
+ .lgrid{gap:10px}
+ .lcard{flex-direction:row;align-items:stretch}
+ .lcard .limg{flex:0 0 96px;aspect-ratio:auto;min-height:96px}
+ .lcard .lph span{font-size:44px}
+ .lcard .lbody{padding:12px 14px;gap:4px}
+ .lcard .lbody .small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px}
+ .lcard .h3{font-size:17px}
+}
+.lcard .tbc{white-space:nowrap}
+@media (max-width:599px){.tcard .tphoto{aspect-ratio:16/9}.tcard{padding:16px}}
+@media (max-width:599px){.tl{grid-template-columns:1fr;border-top:0;border-left:1px dashed var(--muted);margin-left:4px;padding-left:20px}.tl li{padding:0 0 22px}.tl li::before{top:10px;left:-25px}.tl .yr{font-size:34px}}
