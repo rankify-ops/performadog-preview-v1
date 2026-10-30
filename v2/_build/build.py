@@ -38,9 +38,40 @@ NAV = [('shop.html', 'Shop'), ('feeding-guide.html', 'Feeding guide'), ('science
 MENU_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>'
 
 
+CHEV = '<svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+LEARN = [('science.html', 'The science', 'Nutrient Ramping, gut health and how it is made'), ('case-study.html', 'Lab case study', 'One dog, two blood panels, twelve months apart'),
+         ('ingredients.html', 'Ingredients', 'Every formula, and where it comes from'), ('library.html', 'The library', '77 articles and 39 answers from Bill'),
+         ('story.html', 'Our story', 'Kris, Von Forell and 45 years of working dogs'), ('reviews.html', 'Reviews', '43 handlers, breeders and owners')]
+
+
+def mega_menus():
+    prods = ''.join(f'''<a class="mm-prod" href="{p["slug"]}.html"><span class="mm-pimg steelfx"><img src="assets/img/product/{p["img"]}" alt="" loading="lazy"></span>
+<span class="mm-ptxt"><span class="mm-tag">{E(p["job"])}</span><b>{E(p["name"])}</b><span class="mm-price">From {money(min(s[2] for s in p["sizes"] if s[2]))} · <em>{money(round(pday(p, default_size(p)[1], default_size(p)[2]), 2))}/day</em></span></span></a>''' for p in PRODUCTS[:4])
+    needs = ''.join(f'<a href="{h}">{ic}<span>{t}</span></a>' for h, t, s, ic in NEEDS)
+    learn = ''.join(f'<a class="mm-learn" href="{h}"><b>{t}</b><span>{d}</span></a>' for h, t, d in LEARN)
+    shop = f'''<div class="mm" id="mm-shop" data-mm hidden><div class="wrap mm-grid">
+<div class="mm-col mm-needs"><p class="mm-h">Shop by need</p>{needs}<a class="mm-all" href="shop.html">Shop the full range →</a></div>
+<div class="mm-col mm-prods"><p class="mm-h">Best sellers</p><div class="mm-pgrid">{prods}</div></div>
+<a class="mm-feature steelfx" href="feeding-guide.html"><span class="mm-h">Not sure which?</span><b class="d">Build your dog's plan</b><span>Four questions. Which food, how much a day, and what it costs.</span><span class="btn btn-ember">Start · 1 min</span></a>
+</div></div>'''
+    lrn = f'''<div class="mm" id="mm-learn" data-mm hidden><div class="wrap mm-grid mm-grid-learn">
+<div class="mm-lgrid">{learn}</div>
+<a class="mm-feature mm-photo" href="case-study.html"><img src="assets/img/real/kris-heeling-dobermann.jpg" alt="" loading="lazy"><span class="mm-ov"><span class="mm-h">Proof, not promises</span><b class="d">Read the lab case study</b></span></a>
+</div></div>'''
+    return shop + lrn
+
+
 def page(fname, title, desc, body, active=None):
-    nav = ''.join(f'<a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a>' for h, t in NAV)
-    dnav = ''.join(f'<a href="{h}">{t}</a>' for h, t in NAV + [('delivery.html', 'Delivery'), ('faq.html', 'FAQ'), ('contact.html', 'Contact')])
+    is_shop = active == 'shop.html'
+    is_learn = active in ('science.html', 'library.html', 'story.html', 'reviews.html')
+    nav = (f'<button class="nav-t" type="button" aria-expanded="false" aria-controls="mm-shop" data-mm-t{" aria-current=\"page\"" if is_shop else ""}>Shop{CHEV}</button>'
+           f'<button class="nav-t" type="button" aria-expanded="false" aria-controls="mm-learn" data-mm-t{" aria-current=\"page\"" if is_learn else ""}>Learn{CHEV}</button>'
+           f'<a href="feeding-guide.html"{" aria-current=\"page\"" if active == "feeding-guide.html" else ""}>Feeding guide</a>'
+           f'<a href="reviews.html">Reviews</a><a href="delivery.html">Delivery</a>')
+    dprods = ''.join(f'<a class="dm-prod" href="{p["slug"]}.html"><span class="mm-pimg steelfx"><img src="assets/img/product/{p["img"]}" alt="" loading="lazy"></span><span><b>{E(p["name"])}</b><span class="small muted">From {money(min(s[2] for s in p["sizes"] if s[2]))}</span></span></a>' for p in PRODUCTS)
+    dnav = (f'<details class="dm" open><summary>Shop</summary><div class="dm-body">{dprods}<a class="dm-link" href="shop.html">Shop the full range →</a></div></details>'
+            f'<details class="dm"><summary>Learn</summary><div class="dm-body">' + ''.join(f'<a class="dm-link" href="{h}">{t}</a>' for h, t, d in LEARN) + '</div></details>'
+            '<a class="dm-top" href="feeding-guide.html">Feeding guide</a><a class="dm-top" href="delivery.html">Delivery &amp; subscriptions</a><a class="dm-top" href="faq.html">FAQ</a><a class="dm-top" href="contact.html">Contact</a>')
     doc = f'''<!doctype html>
 <html lang="en-AU">
 <head>
@@ -66,7 +97,8 @@ def page(fname, title, desc, body, active=None):
 <button class="cart-btn" type="button" data-cart-open aria-label="Open cart">{CART_SVG}<span class="cart-count" data-cart-count>0</span></button>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="drawer">{MENU_SVG}<span class="hide-s">Menu</span></button></div>
 </div>
-<div class="drawer" id="drawer"><nav aria-label="Mobile">{dnav}<a class="btn btn-ember" href="shop.html">Shop now</a></nav></div>
+{mega_menus()}
+<div class="drawer" id="drawer"><nav aria-label="Mobile">{dnav}<a class="btn btn-ember btn-block" href="shop.html">Shop now</a></nav></div>
 </header>
 <main>
 {body}
