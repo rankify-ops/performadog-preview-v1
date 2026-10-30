@@ -128,3 +128,20 @@
     f.addEventListener('submit', function (e) { e.preventDefault(); var o = $('[data-form-out]', f); if (o) o.textContent = 'Preview only — on the live site this sends to the Performadog inbox.'; });
   });
 })();
+(function () {
+  // Library search
+  var q = document.querySelector('[data-lib-search]');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.trim().toLowerCase();
+    document.querySelectorAll('#lgrid [data-title]').forEach(function (c) {
+      c.style.display = !v || c.getAttribute('data-title').indexOf(v) > -1 || c.textContent.toLowerCase().indexOf(v) > -1 ? '' : 'none';
+    });
+  });
+  // Click-to-load YouTube
+  document.querySelectorAll('[data-yt]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-yt'), t = b.querySelector('.vthumb');
+      t.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+    });
+  });
+})();

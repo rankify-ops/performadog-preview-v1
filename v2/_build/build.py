@@ -31,7 +31,7 @@ def money(v):
 
 # ---- layout -------------------------------------------------------------------
 NAV = [('shop.html', 'Shop'), ('feeding-guide.html', 'Feeding guide'), ('science.html', 'The science'),
-       ('story.html', 'Our story'), ('reviews.html', 'Reviews')]
+       ('library.html', 'Library'), ('story.html', 'Our story'), ('reviews.html', 'Reviews')]
 MENU_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>'
 
 
@@ -605,7 +605,95 @@ def contact():
 def build():
     pages = [home(), shop(), story(), science(), case_study(), ingredients(), feeding(), reviews(), where_to_buy(), delivery(), faq(), contact()]
     pages += [product(p) for p in PRODUCTS]
-    print('\n'.join(pages))
+    vids = json.load(open(os.path.join(os.path.dirname(__file__), 'videos.json'))) if os.path.exists(os.path.join(os.path.dirname(__file__), 'videos.json')) else []
+    pages += library_pages(load_library(), vids)
+    print(len(pages), 'pages')
+
+
+
+# ---- library: the original site's articles, repackaged -------------------------
+from markdown_it import MarkdownIt
+import re, shutil, glob
+MD = MarkdownIt('commonmark', {'html': False, 'linkify': False}).enable('table')
+CONTENT = '/tmp/claude-0/-home-claude/d3614f29-b622-5364-ad71-b3bf29072599/scratchpad/content'
+LIB_JSON = os.path.join(os.path.dirname(__file__), 'library.json')
+KIND = {'ingredient': ('Ingredients', 'ingredient'), 'nutrient': ('Nutrients', 'nutrient'), 'interview': ('Handlers & breeders', 'interview'),
+        'nutritionist': ('Ask Bill', 'nutritionist'), 'health': ('Dog health', 'health'), 'brand': ('Kris & the brand', 'brand'), 'product': ('Products', 'product')}
+
+
+def load_library():
+    if not os.path.exists(LIB_JSON):
+        return []
+    return json.load(open(LIB_JSON))
+
+
+def lib_card(a, big=False):
+    img = f'<div class="limg"><img src="{a["img"]}" alt="" loading="lazy"></div>' if a.get('img') else f'<div class="limg lph"><span>{E(a["title"][:1])}</span></div>'
+    return f'''<a class="lcard" href="{a["file"]}" data-tags="{a["kind"]}" data-title="{E(a["title"].lower())}">{img}
+<div class="lbody"><p class="mono steel">{KIND.get(a["kind"], ("Notes",))[0]}{(" · " + a["year"]) if a.get("year") else ""}</p><h3 class="h3">{E(a["title"])}</h3><p class="small muted">{E(a.get("summary", ""))}</p></div></a>'''
+
+
+def library_pages(lib, videos):
+    if not lib:
+        return []
+    out = []
+    by_kind = {}
+    for a in lib:
+        by_kind.setdefault(a['kind'], []).append(a)
+    chips = '<button class="chip" data-filter="all" aria-pressed="true">All</button>' + ''.join(
+        f'<button class="chip" data-filter="{k}" aria-pressed="false">{v[0]} ({len(by_kind.get(k, []))})</button>' for k, v in KIND.items() if by_kind.get(k))
+    cards = ''.join(lib_card(a) for a in lib)
+    vids = ''
+    if videos:
+        vids = plain_section(f'''<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ask Bill</p><h2 class="d d-md">{len(videos)} questions, answered on camera</h2></div><p class="muted" style="max-width:26em">Bill Wiadrowski, animal nutritionist since 1986, on sourcing, manufacturing, raw vs dry, the microbiome and more.</p></div>
+<div class="g4">{"".join(video_card(v) for v in videos)}</div>''', 'night', sid='videos')
+    body = page_head('The library', ['Everything', 'Kris &amp; Bill know'], f'{len(lib)} articles from the original Performadog site — every ingredient, nutrient, handler interview and Q&amp;A — rewritten into one place you can actually search.') + f'''
+<section class="sec"><div class="wrap pad">
+<div class="row" style="margin-bottom:24px;align-items:center"><label class="sr" for="lq">Search the library</label><input class="input" id="lq" type="search" placeholder="Search: kelp, taurine, joints, puppies…" style="max-width:420px" data-lib-search></div>
+<div class="chips" data-filter-group data-target="#lgrid" style="margin-bottom:28px">{chips}</div>
+<div class="lgrid" id="lgrid">{cards}</div></div></section>{vids}{cta_band()}'''
+    out.append(page('library.html', 'The library — Performadog', 'Ingredients, nutrients, handler interviews and Bill Wiadrowski\'s Q&A.', body, 'library.html'))
+    for a in lib:
+        out.append(article(a, lib))
+    return out
+
+
+def video_card(v):
+    return f'''<button class="vcard" type="button" data-yt="{E(v["id"])}" aria-label="Play: {E(v["title"])}"><span class="vthumb"><img src="https://i.ytimg.com/vi/{E(v["id"])}/hqdefault.jpg" alt="" loading="lazy"><span class="play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z" fill="#121412"/></svg></span></span><span class="vtitle">{E(v["title"])}</span></button>'''
+
+
+def related_products(a):
+    text = (a['title'] + ' ' + a.get('body', '')).lower()
+    hits = []
+    for p in PRODUCTS:
+        for word in p.get('ings', []) + [p['name']]:
+            w = word.lower().replace('wild-caught ', '').replace('australian ', '').replace('grass-fed ', '')
+            if len(w) > 3 and w in a['title'].lower():
+                hits.append(p); break
+    return hits[:3] or [BY_SLUG['turkey-grain-free'], BY_SLUG['ocean-fish']]
+
+
+def article(a, lib):
+    body_html = MD.render(a.get('body', ''))
+    hero = f'<div class="shot ratio-169" style="margin-top:32px"><img src="{a["img"]}" alt="" ></div>' if a.get('img') else ''
+    extra = ''.join(f'<figure style="margin:32px 0"><div class="shot ratio-43"><img src="{s}" alt="" loading="lazy"></div></figure>' for s in a.get('more_imgs', [])[:3])
+    yt = ''.join(f'<div class="vembed"><iframe src="https://www.youtube-nocookie.com/embed/{E(y)}" title="Video" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>' for y in a.get('yt', [])[:2])
+    rel = [x for x in lib if x['kind'] == a['kind'] and x['file'] != a['file']][:3]
+    prods = related_products(a)
+    pcards = ''.join(f'<a class="mini" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt=""><span><b>{E(p["name"])}</b><span class="small muted">{E(p["job"])}</span></span></a>' for p in prods)
+    words = len(a.get('body', '').split())
+    body = f'''<section class="sec night"><div class="wrap" style="padding-top:48px;padding-bottom:48px"><div style="max-width:880px">
+<p class="mono steel"><a href="library.html" style="text-decoration:none">Library</a> / {KIND.get(a["kind"], ("Notes",))[0]}</p>
+<h1 class="d d-lg" style="margin-top:18px;font-size:clamp(40px,5.6vw,80px)">{E(a["title"])}</h1>
+<p class="lead muted mt-s">{E(a.get("summary", ""))}</p>
+<p class="mono muted mt-s">{E(a.get("date_h", ""))}{" · " if a.get("date_h") else ""}{max(1, round(words / 220))} min read</p>{hero}</div></div></section>
+<section class="sec"><div class="wrap pad"><div class="art">
+<article class="prose">{body_html}{extra}{yt}
+<p class="small muted" style="margin-top:40px;border-top:1px solid var(--hair);padding-top:16px">First published on performadog.com.au{(" in " + a["year"]) if a.get("year") else ""}. Lightly edited for the new site. This is general information, not veterinary advice.</p></article>
+<aside class="stack-l"><div class="stack"><p class="mono steel">Feed it</p>{pcards}</div>
+{('<div class="stack"><p class="mono steel">Read next</p>' + "".join(f'<a class="link" href="{r["file"]}">{E(r["title"])}</a>' for r in rel) + '</div>') if rel else ''}</aside>
+</div></div></section>{cta_band()}'''
+    return page(a['file'], f'{a["title"]} — Performadog library', a.get('summary', '')[:155], body, 'library.html')
 
 
 if __name__ == '__main__':
