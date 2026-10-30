@@ -59,6 +59,8 @@
       if (onceP) onceP.textContent = '$' + p.toFixed(2);
       if (price) price.textContent = '$' + p.toFixed(2);
       if (per && kg) per.textContent = '$' + (p / kg).toFixed(2) + '/kg';
+      var pdEl = $('[data-pdp-pd]'); if (pdEl && b.getAttribute('data-pd')) pdEl.textContent = '$' + b.getAttribute('data-pd') + '/day';
+      var sa = $('[data-sa-price]'); if (sa) sa.textContent = '$' + p + ' · ' + b.getAttribute('data-size');
     }
     sizes.forEach(function (b) { if (!b.disabled) b.addEventListener('click', function () { pick(b); }); });
     var opts = $$('.opt', pdp);
@@ -66,7 +68,7 @@
       o.addEventListener('click', function () {
         opts.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
         o.setAttribute('aria-pressed', 'true');
-        if (atc) atc.textContent = o.getAttribute('data-mode') === 'sub' ? 'Start my subscription' : 'Add to cart';
+        var l = atc && atc.querySelector('[data-atc-label]'); if (l) l.textContent = o.getAttribute('data-mode') === 'sub' ? 'Add to cart · subscribe' : 'Add to cart';
       });
     });
   }
@@ -112,6 +114,7 @@
       $('[data-o-food-link]').setAttribute('href', food.url);
       $('[data-o-days]').textContent = days + ' days';
       $('[data-o-cost]').textContent = '$' + (food.price / days).toFixed(2);
+      calc._food = food;
       $('[data-o-every]').textContent = 'every ' + Math.max(1, Math.round(days / 7)) + ' weeks';
       $('[data-o-meals]').textContent = Math.round(g / 2) + 'g twice a day';
       $('[data-pup-row]').style.display = state.stage === 'puppy' ? '' : 'none';
@@ -144,4 +147,107 @@
       t.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
     });
   });
+})();
+
+/* ===== v2.1 store: cart, buy boxes, sticky ATC, steel sheen ===== */
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var FREE = 150, KEY = 'pd-preview-cart', cart = [];
+  try { cart = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) { cart = []; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} }
+  function money(v) { return '$' + (Math.round(v * 100) / 100).toFixed(v % 1 ? 2 : 0); }
+  var drawer = $('[data-cart]'), scrim = $('.cart-scrim');
+  function open() { if (!drawer) return; drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); scrim.hidden = false; }
+  function close() { if (!drawer) return; drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); scrim.hidden = true; }
+  $$('[data-cart-open]').forEach(function (b) { b.addEventListener('click', open); });
+  $$('[data-cart-close]').forEach(function (b) { b.addEventListener('click', close); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  function render() {
+    var n = cart.reduce(function (a, i) { return a + i.qty; }, 0), sub = cart.reduce(function (a, i) { return a + i.qty * i.price; }, 0);
+    $$('[data-cart-count]').forEach(function (c) { c.textContent = n; c.setAttribute('data-n', n); });
+    var box = $('[data-cart-items]'); if (!box) return;
+    box.innerHTML = cart.length ? '' : '<p class="cart-empty">Your cart is empty.<br><a href="shop.html" style="font-weight:700">Shop the range →</a></p>';
+    cart.forEach(function (it, i) {
+      var row = document.createElement('div'); row.className = 'ci';
+      row.innerHTML = '<img alt="" src="' + it.img + '"><div><b></b><p class="small muted"></p><div class="qty"><button type="button" aria-label="Fewer">−</button><span></span><button type="button" aria-label="More">+</button><button class="rm" type="button">Remove</button></div></div><b class="pr"></b>';
+      row.querySelector('div > b').textContent = it.name; row.querySelector('.small').textContent = it.size;
+      row.querySelector('.qty span').textContent = it.qty; row.querySelector('.pr').textContent = money(it.qty * it.price);
+      var bs = row.querySelectorAll('.qty button');
+      bs[0].onclick = function () { it.qty = Math.max(1, it.qty - 1); save(); render(); };
+      bs[1].onclick = function () { it.qty++; save(); render(); };
+      bs[2].onclick = function () { cart.splice(i, 1); save(); render(); };
+      box.appendChild(row);
+    });
+    $('[data-cart-sub]').textContent = money(sub);
+    var left = FREE - sub, fill = $('[data-ship-fill]'), msg = $('[data-ship-msg]');
+    fill.style.width = Math.min(100, sub / FREE * 100) + '%';
+    msg.innerHTML = sub === 0 ? 'Free metro delivery on orders over <b>$' + FREE + '</b>.' : (left > 0 ? 'You\'re <b>' + money(left) + '</b> away from free metro delivery.' : '<b>Free metro delivery unlocked.</b>');
+  }
+  var toastT;
+  function toast(t) { var el = $('[data-toast]'); if (!el) return; el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { el.classList.remove('on'); }, 2200); }
+  function add(item) {
+    var ex = cart.filter(function (i) { return i.id === item.id && i.size === item.size; })[0];
+    if (ex) ex.qty++; else cart.push({ id: item.id, name: item.name, size: item.size, price: +item.price, img: item.img, qty: 1 });
+    save(); render(); open();
+  }
+  var co = $('[data-checkout]'); if (co) co.addEventListener('click', function () { $('[data-checkout-msg]').textContent = 'Preview only — on the live site this goes to Shopify checkout.'; });
+  // Buy boxes
+  $$('[data-buy]').forEach(function (bx) {
+    var szs = $$('.sz', bx), bp = $('[data-bp]', bx), bpd = $('[data-bpd]', bx);
+    szs.forEach(function (s) {
+      s.addEventListener('click', function () {
+        szs.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); }); s.setAttribute('aria-pressed', 'true');
+        bp.textContent = money(+s.getAttribute('data-price')); bpd.textContent = '$' + s.getAttribute('data-pd');
+      });
+    });
+    $('[data-add]', bx).addEventListener('click', function () {
+      var s = szs.filter(function (x) { return x.getAttribute('aria-pressed') === 'true'; })[0] || szs[0];
+      add({ id: bx.getAttribute('data-id'), name: bx.getAttribute('data-name'), img: bx.getAttribute('data-img'), size: s.getAttribute('data-size'), price: s.getAttribute('data-price') });
+    });
+  });
+  $$('[data-quick-add]').forEach(function (b) {
+    b.addEventListener('click', function () { add({ id: b.getAttribute('data-id'), name: b.getAttribute('data-name'), img: b.getAttribute('data-img'), size: b.getAttribute('data-size'), price: b.getAttribute('data-price') }); });
+  });
+  // Product page
+  var atc = $('[data-atc]');
+  function pdpAdd() {
+    var s = $('.size[aria-pressed="true"]'); if (!s) return;
+    var sub = $('.opt[data-mode="sub"][aria-pressed="true"]');
+    add({ id: atc.getAttribute('data-id'), name: atc.getAttribute('data-name'), img: atc.getAttribute('data-img'), size: s.getAttribute('data-size') + (sub ? ' · subscription' : ''), price: s.getAttribute('data-p') });
+  }
+  if (atc) {
+    atc.addEventListener('click', pdpAdd);
+    var sa = $('[data-sticky-atc]'), saBtn = $('[data-sa-add]');
+    if (saBtn) saBtn.addEventListener('click', pdpAdd);
+    if (sa && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { sa.classList.toggle('on', !es[0].isIntersecting && es[0].boundingClientRect.top < 0); }).observe(atc);
+  }
+  // Feeding guide add
+  var ca = $('[data-calc-add]'), calcEl = $('[data-calc]');
+  if (ca && calcEl) ca.addEventListener('click', function () {
+    var f = calcEl._food || { name: 'Ocean Fish', url: 'ocean-fish.html', price: 160 };
+    var img = { 'turkey-grain-free.html': 'performa_GFturkey_lamb-cut.webp', 'ocean-fish.html': 'performa_GF_ocean-fish-cut.webp', 'puppy-lamb-and-fish.html': '01_Performadog_Puppy-Single-cut.webp' }[f.url];
+    add({ id: f.url.replace('.html', ''), name: f.name, img: 'assets/img/product/' + img, size: '15 kg', price: f.price });
+  });
+  render();
+  // Steel sheen that travels with scroll (and with the pointer on tiles)
+  var steel = $$('.steelfx');
+  if (steel.length && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    var ticking = false;
+    function upd() {
+      ticking = false; var vh = innerHeight;
+      steel.forEach(function (el) {
+        if (el._hover) return;
+        var r = el.getBoundingClientRect(); if (r.bottom < -50 || r.top > vh + 50) return;
+        var p = (vh - r.top) / (vh + r.height);
+        el.style.setProperty('--sx', (100 - p * 100).toFixed(2) + '%');
+      });
+    }
+    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+    addEventListener('resize', upd); upd();
+    $$('.pack.steelfx,.pimg.steelfx,.pdp-media.steelfx').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); el._hover = true; el.style.setProperty('--sx', (100 - (e.clientX - r.left) / r.width * 100).toFixed(1) + '%'); });
+      el.addEventListener('pointerleave', function () { el._hover = false; upd(); });
+    });
+  }
 })();
