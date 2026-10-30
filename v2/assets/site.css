@@ -549,3 +549,4 @@ p,li,figcaption,.small{text-wrap:pretty}
 }
 @media (max-width:599px){.tl-nav{display:none}.tl-y{font-size:20px;padding:0 12px}}
 .shot img{background:#e7e1d5}
+.steelfx::before{content:none}
