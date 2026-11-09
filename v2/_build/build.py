@@ -453,8 +453,8 @@ def product(p):
     ings = ''
     if p.get('ings'):
         li = ''.join(f'<li class="{"top" if i < 5 else ""}">' + (f'<a href="{ing_link(x)}">{E(x)}</a>' if ing_link(x) else E(x)) + '</li>' for i, x in enumerate(p['ings']))
-        ings = f'''<div class="stack"><h2 class="h3">What's in it</h2><p class="muted">Main ingredients in order, then a full vitamin and mineral premix. Preserved naturally with vitamin E and rosemary oil.</p>
-<ul class="ing">{li}</ul>{('<p class="small">' + tbc('Order to confirm against the current bag') + '</p>') if p.get('ings_tbc') else ''}<a class="link" href="ingredients.html">See every ingredient and where it comes from →</a></div>'''
+        ings = f'''<div class="ic-head"><div class="stack" style="gap:6px"><p class="mono steel">What's in it</p><h2 class="h3">Real ingredients, in order</h2></div><p class="small muted">Tap any ingredient to see what it does. Main ingredients in order, then a full vitamin and mineral premix. Preserved naturally with vitamin E and rosemary oil.</p></div>
+<div class="ingcs">{ing_circles(p)}</div>{('<p class="small">' + tbc('Order to confirm against the current bag') + '</p>') if p.get('ings_tbc') else ''}<a class="link" href="ingredients.html">See every ingredient and where it comes from →</a>'''
     feeding = ''
     if is_dog:
         rows = ''.join(f'<div class="kv-i kv-feed"><span>{w}</span><b>{g}</b><small>a day</small></div>' for w, g in BAG_TABLE)
@@ -508,14 +508,17 @@ def product(p):
 <div class="sticky-atc" data-sticky-atc hidden><div class="wrap"><img src="assets/img/product/{p["img"]}" alt=""><div class="sa-txt"><b>{E(p["name"])}</b><span data-sa-price>{money(default[2])} · {default[0]}</span></div><button class="btn btn-ember" type="button" data-sa-add>Add to cart</button></div></div>
 <section class="sec pdp-info"><div class="wrap pad stack-l">
 {f'<div class="stack"><p class="mono steel">At a glance</p><div class="hls">{big_spec}</div></div>' if big_spec else ''}
+{f'<div class="info-card">{ings}</div>' if ings else ''}
 <div class="info-2">
-<div class="info-card"><h2 class="h3">Who it's for</h2><ul class="ticks" style="grid-template-columns:1fr;font-size:16px">{for_who}</ul></div>
-<div class="info-card">{ings or feeding}</div>
-</div>
-<div class="info-card"><div class="ic-head"><h2 class="h3">{"Typical analysis" if p["kind"] != "supplement" else "What's in a scoop"}</h2>{"<p class='small muted'>Formulated to meet Australian and AAFCO nutrient standards. " + tbc("Kris: confirm the exact AAFCO / AS 5812 statement") + "</p>" if p["kind"] != "supplement" else ""}</div>
+<div class="info-card"><h2 class="h3">Who it's for</h2><ul class="ticks who-ticks">{for_who}</ul>{'' if ings else feeding}</div>
+<div class="info-card"><div class="stack" style="gap:8px"><h2 class="h3">{"Typical analysis" if p["kind"] != "supplement" else "What's in a scoop"}</h2>{"<p class='small muted'>Formulated to meet Australian and AAFCO nutrient standards. " + tbc("Kris: confirm the exact AAFCO / AS 5812 statement") + "</p>" if p["kind"] != "supplement" else ""}</div>
 <div class="kv">{analysis}</div>{an_note}</div>
+</div>
 {f'<div class="info-card">{feeding}</div>' if ings else ''}
 </div></section>
+<dialog class="ingd" data-ingd aria-labelledby="ingd-t"><div class="ingd-in"><button class="ingd-x" type="button" data-ingd-close aria-label="Close">✕</button>
+<div class="ingd-c" data-ingd-c></div><h3 class="h3" id="ingd-t" data-ingd-t></h3><p class="ingd-p" data-ingd-p></p>
+<div class="ingd-links"><a class="btn btn-ember" data-ingd-a href="#">Read more about it</a><a class="btn btn-line" href="ingredients.html">See every ingredient</a></div></div></dialog>
 <section class="sec alt kris-band"><div class="wrap pad"><div class="kris-grid">
 <div class="kris-img"><img src="{IMG['kris']['src']}" alt="Kris Kotsopoulos with a Von Forell Dobermann" loading="lazy"></div>
 <div class="stack-l"><div class="stack"><p class="mono steel">Who makes it</p><h2 class="d d-md">Built by a breeder, not a marketing team.</h2>
@@ -797,15 +800,53 @@ KIND = {'ingredient': ('Ingredients', 'ingredient'), 'nutrient': ('Nutrients', '
         'nutritionist': ('Ask Bill', 'nutritionist'), 'health': ('Dog health', 'health'), 'brand': ('Kris & the brand', 'brand'), 'product': ('Products', 'product')}
 
 
+ING_MAP = {'turkey': 'turkey-meat', 'poultry oil': 'poultry-oil', 'lamb': 'lamb', 'australian lamb': 'lamb', 'grass-fed lamb': 'lamb', 'lamb fat': 'lamb',
+           'field peas': 'field-peas', 'chickpeas': 'chick-peas', 'lentils': 'lentils', 'sweet lupins': 'lupins', 'egg': 'eggs', 'carrots': 'carrots',
+           'spinach': 'spinach', 'parsley': 'parsley', 'kelp': 'kelp', 'tapioca': 'tapioca', 'yeast extract': 'yeast-extract', 'wild-caught tuna': 'tuna-wild-caught',
+           'fish oil': 'fish-oil', 'rice': 'rice', 'oat groats': 'groats', 'alfalfa': 'alfalfa', 'garlic': 'garlic', 'methionine': 'methionine',
+           'yucca schidigera': 'yucca-schidigera', 'wild kangaroo': 'wild-kangaroo'}
+ING_EXTRA = {'taurine': 'An amino acid cats cannot make enough of on their own, so it is added to every iPurr bag for heart and eye health.'}
+
+
+def ing_article(name):
+    slug = ING_MAP.get(name.lower())
+    return next((a for a in LIB if a['slug'] == slug), None) if slug else None
+
+
 def ing_link(name):
-    n = name.lower()
-    for a in LIB:
-        if a['kind'] != 'ingredient':
-            continue
-        key = a['slug'].replace('-', ' ').replace('wild caught', '').replace('meat', '').strip()
-        if key and (key in n or n.split()[-1].rstrip('s') in a['title'].lower()):
-            return a['file']
-    return None
+    a = ing_article(name)
+    return a['file'] if a else None
+
+
+def ing_blurb(name):
+    import re as _re
+    if name.lower() in ING_EXTRA:
+        return ING_EXTRA[name.lower()]
+    a = ing_article(name)
+    if not a:
+        return ''
+    paras = [p.strip() for p in a['body'].split('\n\n') if p.strip() and not p.strip().startswith(('#', '!', '|', '-', '*', '>'))]
+    txt = _re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', paras[0] if paras else a['summary'])
+    txt = _re.sub(r'[*_`]', '', txt)
+    if len(txt) > 260:
+        cut = txt[:260]
+        txt = cut[:cut.rfind('. ') + 1] if '. ' in cut else cut.rsplit(' ', 1)[0] + '…'
+    return txt
+
+
+ING_FALLBACK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 6-14 15-14 0 9-6 15-14 15"/><path d="M5 19l7-7"/></svg>'
+
+
+def ing_circles(p):
+    out = ''
+    for i, x in enumerate(p['ings']):
+        a = ing_article(x)
+        img = a['img'] if a and a.get('img') else ''
+        art = a['file'] if a else ''
+        face = f'<img src="{img}" alt="" loading="lazy">' if img else f'<span class="ingc-fb">{ING_FALLBACK}</span>'
+        out += (f'<button class="ingc{" top" if i < 5 else ""}" type="button" data-ing="{E(x)}" data-ing-img="{img}" data-ing-txt="{E(ing_blurb(x))}" data-ing-url="{art}">'
+                f'<span class="ingc-c">{face}</span><span class="ingc-n">{E(x)}</span></button>')
+    return out
 
 
 def load_library():

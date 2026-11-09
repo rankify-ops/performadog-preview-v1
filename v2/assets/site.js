@@ -307,3 +307,22 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openT) { var t = openT; hide(t); t.focus(); } });
   document.addEventListener('click', function (e) { if (openT && !e.target.closest('.hdr')) hide(openT); });
 })();
+
+/* Ingredient circles → popup */
+(function(){
+  var d=document.querySelector('[data-ingd]'); if(!d) return;
+  var c=d.querySelector('[data-ingd-c]'),t=d.querySelector('[data-ingd-t]'),p=d.querySelector('[data-ingd-p]'),a=d.querySelector('[data-ingd-a]');
+  document.querySelectorAll('.ingc').forEach(function(b){
+    b.addEventListener('click',function(){
+      var img=b.getAttribute('data-ing-img'),url=b.getAttribute('data-ing-url');
+      c.innerHTML=img?'<img src="'+img+'" alt="">':b.querySelector('.ingc-c').innerHTML;
+      t.textContent=b.getAttribute('data-ing');
+      p.textContent=b.getAttribute('data-ing-txt')||'Part of the full ingredient list printed on the bag.';
+      if(url){a.href=url;a.textContent='Read more about '+b.getAttribute('data-ing').toLowerCase();a.hidden=false}else{a.hidden=true}
+      if(d.showModal){d.showModal()}else{d.setAttribute('open','')}
+    });
+  });
+  function close(){if(d.close)d.close();else d.removeAttribute('open')}
+  d.querySelector('[data-ingd-close]').addEventListener('click',close);
+  d.addEventListener('click',function(e){if(e.target===d)close()});
+})();
