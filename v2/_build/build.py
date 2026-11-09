@@ -5,13 +5,15 @@ import html, json, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from data import *  # noqa
 
-OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+OUT = os.environ.get('PD_OUT') or os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+GLASS = os.path.exists(os.path.join(OUT, 'assets', 'glass.css'))
+PV = 'v3' if GLASS else 'v2'
 E = html.escape
 
 # ---- image slots --------------------------------------------------------------
 # slot -> {"src","alt","stock":bool} ; missing slot renders a "PHOTO NEEDED" panel.
 import hashlib
-VER = hashlib.md5((open(os.path.join(OUT, 'assets', 'site.css'), 'rb').read() + open(os.path.join(OUT, 'assets', 'site.js'), 'rb').read())).hexdigest()[:8]
+VER = hashlib.md5((open(os.path.join(OUT, 'assets', 'site.css'), 'rb').read() + open(os.path.join(OUT, 'assets', 'site.js'), 'rb').read() + (open(os.path.join(OUT, 'assets', 'glass.css'), 'rb').read() if GLASS else b''))).hexdigest()[:8]
 LIB, VIDEOS = [], []
 IMG = json.load(open(os.path.join(os.path.dirname(__file__), 'images.json')))
 
@@ -88,10 +90,10 @@ def page(fname, title, desc, body, active=None):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Barlow+Condensed:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v={VER}">
+<link rel="stylesheet" href="assets/site.css?v={VER}">{f'<link rel="stylesheet" href="assets/glass.css?v={VER}">' if GLASS else ''}
 </head>
-<body>
-<div class="preview-bar">Design preview v2 · not the live store · <span class="tbc">highlighted</span> = info we need from you</div>
+<body{' class="glass"' if GLASS else ''}>
+<div class="preview-bar">Design preview {PV} · not the live store · <span class="tbc">highlighted</span> = info we need from you</div>
 <div class="ann"><span>Free metro delivery over ${FREE_SHIP}</span><span class="hide-s"> · Subscribe &amp; save on every bag · Dispatched within 24 hours</span></div>
 <header class="hdr">
 <div class="wrap">

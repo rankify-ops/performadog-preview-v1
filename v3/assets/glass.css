@@ -1,0 +1,111 @@
+/* ==========================================================================
+   Performadog v3 · Glass (Speedy Needle treatment, Performadog brand colours)
+   Warm cream ground, brand-orange glows behind key grids, milky frosted glass,
+   photos inset on cream, pill buttons, frosted sticky header.
+   ========================================================================== */
+:root{--cream:#f2e8d8;--cream-2:#f8f1e6;--inset:#fbf7ef;--ground:#f2e8d8;--sand:#efe3cf;--hair:rgba(120,90,60,.18);
+  --glass-bg:linear-gradient(140deg,rgba(255,252,245,.52) 0%,rgba(255,247,232,.18) 55%,rgba(255,252,245,.36) 100%);
+  --glass-line:rgba(255,255,255,.78);
+  --glass-sh:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.25),0 22px 46px -24px rgba(90,45,15,.45);
+  --glow:radial-gradient(34% 45% at 8% 22%,rgba(217,48,43,.55),transparent 72%),radial-gradient(30% 45% at 50% 58%,rgba(247,168,35,.62),transparent 72%),radial-gradient(32% 45% at 92% 26%,rgba(238,122,31,.6),transparent 72%),radial-gradient(30% 40% at 26% 96%,rgba(244,150,60,.45),transparent 72%),radial-gradient(30% 40% at 78% 92%,rgba(217,64,31,.45),transparent 72%)}
+body.glass{background:var(--cream)}
+.glass .sec,.glass section.tone{background:transparent}
+.glass .alt{--ground:var(--cream-2);background:var(--cream-2)}
+.glass section.tone{--ground:var(--cream);--sand:#efe3cf}
+
+/* Pill buttons everywhere */
+.glass .btn,.glass .chip,.glass .sz,.glass .cart-btn,.glass .menu-btn,.glass .cart-x{border-radius:999px}
+.glass .btn{padding-left:26px;padding-right:26px}
+.glass .btn-line{background:rgba(255,255,255,.35);border-color:rgba(26,23,20,.55)}
+.glass .btn-ember{box-shadow:0 10px 24px -10px rgba(204,58,23,.7)}
+
+/* Frosted sticky header + mega menu */
+.glass .hdr{background:rgba(250,244,234,.66);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);box-shadow:0 1px 0 rgba(255,255,255,.7),0 10px 30px -20px rgba(90,45,15,.35)}
+.glass .cart-btn,.glass .menu-btn{background:rgba(255,255,255,.5);border-color:rgba(26,23,20,.18)}
+.glass .mm{background:rgba(250,244,234,.86);-webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%);border-bottom:1px solid rgba(255,255,255,.7)}
+.glass .mm-learn,.glass .mm-prod{background:var(--glass-bg);border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.9);border-radius:16px}
+.glass .mm-pimg{border-radius:12px;background:var(--inset)!important}
+.glass .mm-feature,.glass .mm-photo{border-radius:18px}
+
+/* Glow layer behind key grids */
+.glass :is(.feeds,.needs,#grid,.g3,.calc,.fr-grid,.rv-head){position:relative;isolation:isolate}
+.glass :is(.feeds,.needs,#grid,.g3,.calc,.fr-grid,.rv-head)::before{content:"";position:absolute;inset:-60px -20px;z-index:-1;pointer-events:none;filter:blur(26px);background:var(--glow);opacity:.95}
+.glass .needs::before{opacity:.7}
+.glass .fr-grid::before{inset:-40px 10% -40px -10%;opacity:.6}
+.glass .rv-head::before{inset:-30px -10px -30px 55%;opacity:.7}
+
+/* The glass card */
+.glass :is(.feed,.pcard,.need,.tcard,.rv-score,.lab-card,.fcard,.lcard,.qcard,.box,.card){background:var(--glass-bg)!important;-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line)!important;box-shadow:var(--glass-sh);border-radius:20px}
+.glass .pcard,.glass .feed{overflow:hidden}
+.glass .pcard:hover,.glass .feed:hover,.glass .need:hover{border-color:#fff!important;box-shadow:inset 0 1px 0 #fff,0 28px 54px -24px rgba(150,60,20,.55);transform:translateY(-2px)}
+.glass .pcard,.glass .feed,.glass .need{transition:transform .2s ease,box-shadow .2s ease}
+
+/* Photos inset on cream inside glass */
+.glass .pcard .pimg,.glass .pcard .pimg.tone{margin:10px 10px 0;border-radius:14px!important;background:var(--inset)!important;padding:22px}
+.glass .feed{padding:12px 12px 18px;border-bottom:1px solid var(--glass-line)!important;gap:14px}
+.glass .feed > *:not(.pack){padding-left:10px;padding-right:10px}
+.glass .feed .pack,.glass .feed .pack.tone{background:var(--inset)!important;border-radius:14px;padding:18px}
+.glass .feed .foot{border-top-color:rgba(120,90,60,.16)}
+.glass .feeds{border-top:0;gap:22px}
+.glass .tcard .tphoto{border-radius:14px}
+.glass .pcard .pfoot,.glass .buy{border-top-color:rgba(120,90,60,.16)}
+
+/* Shop by need: glass tiles, ember icon disc */
+.glass .need-ic.tone{background:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff,0 6px 16px -8px rgba(204,58,23,.5)}
+.glass .need:hover .need-ic.tone{background:var(--ember)}
+
+/* Trust bar: floating glass strip */
+.glass .usp.tone{background:transparent;border:0;padding:18px 0 4px}
+.glass .usp ul{background:linear-gradient(140deg,rgba(255,252,245,.66) 0%,rgba(255,246,230,.3) 55%,rgba(255,252,245,.5) 100%);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:18px;padding:10px 22px;min-height:60px;position:relative}
+.glass .usp .wrap{position:relative;isolation:isolate}
+.glass .usp .wrap::before{content:"";position:absolute;inset:-14px 6%;z-index:-1;filter:blur(24px);background:radial-gradient(40% 80% at 15% 50%,rgba(238,122,31,.45),transparent 70%),radial-gradient(40% 80% at 85% 50%,rgba(217,48,43,.35),transparent 70%),radial-gradient(30% 80% at 50% 50%,rgba(247,168,35,.4),transparent 70%)}
+
+/* Calculator: glass inputs panel, dark glass result */
+.glass .calc{padding:6px}
+.glass .calc > :first-child{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:22px;padding:26px}
+.glass .calc-out{background:linear-gradient(150deg,rgba(32,27,22,.9),rgba(28,25,21,.82))!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);border-radius:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 30px 60px -28px rgba(90,40,10,.7)}
+.glass .chip{background:rgba(255,255,255,.55);border-color:rgba(26,23,20,.22)}
+
+/* Product page */
+.glass .pdp-media,.glass .pdp-media.tone{background:var(--glass-bg)!important;border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:24px;position:relative;isolation:isolate;overflow:hidden}
+.glass .pdp-media::before{content:"";position:absolute;inset:8% 10%;z-index:-1;filter:blur(40px);background:var(--glow);opacity:.75}
+.glass .sz{background:rgba(255,255,255,.55)}
+.glass .sz[aria-pressed="true"],.glass .sz.on{background:var(--ink)}
+.glass .sub-opt,.glass .opt,.glass [data-plan]{border-radius:16px}
+.glass .rv-score{border-radius:22px}
+.glass .post,.glass .postcode{border-radius:18px}
+
+/* Featured review + photo frames */
+.glass .fr-img{border-radius:24px;border:1px solid var(--glass-line);box-shadow:var(--glass-sh)}
+.glass .fr-body{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:24px;padding:clamp(22px,3vw,40px)}
+
+/* Lab sheet: keep paper, rounder */
+.glass .sheet{border-radius:18px}
+
+/* Sticky ATC + cart: frosted */
+.glass .sticky-atc{background:rgba(250,244,234,.8);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border-top:1px solid rgba(255,255,255,.8)}
+.glass .cart{background:#faf5ec}
+
+/* Mobile: lighter blur for performance, smaller glows */
+@media (max-width:760px){
+  .glass :is(.feed,.pcard,.need,.tcard,.fr-body,.calc > :first-child){-webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%)}
+  .glass :is(.feeds,.needs,#grid,.g3,.calc,.fr-grid)::before{inset:-30px -16px;filter:blur(20px)}
+  .glass .usp ul{padding:10px 14px;border-radius:16px}
+  .glass .pcard .pimg,.glass .pcard .pimg.tone{margin:8px 8px 0;padding:14px}
+  .glass .calc > :first-child{padding:18px}
+}
+@media (prefers-reduced-transparency:reduce){.glass :is(.feed,.pcard,.need,.tcard,.fr-body){background:rgba(255,252,245,.92)!important;-webkit-backdrop-filter:none;backdrop-filter:none}}
+
+/* fixes after first visual pass */
+.glass .btn{padding-left:22px;padding-right:22px}
+@media (max-width:760px){.glass .btn{padding-left:16px;padding-right:16px}}
+.glass .calc-out .btn-line{background:transparent;border-color:rgba(255,255,255,.5);color:#fff}
+.glass .calc-out .btn-line:hover{background:rgba(255,255,255,.1);color:#fff}
+.glass .cta-band .btn-line{background:transparent}
+.glass .row[style*="border:1px solid var(--hair);border-radius:2px"]{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line)!important;box-shadow:var(--glass-sh);border-radius:18px!important}
+.glass .shot,.glass .shot img,.glass .hero2 img,.glass .hero-img,.glass .lcard,.glass .dogcard .vid{border-radius:20px}
+.glass .shot{overflow:hidden}
+.glass .tl-y{border-radius:999px}
+.glass .chip.on,.glass .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.glass .ship-box{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:18px}
+.glass .ship-box input{border-radius:999px;background:rgba(255,255,255,.7)}
