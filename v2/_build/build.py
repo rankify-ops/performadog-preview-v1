@@ -504,7 +504,7 @@ def product(p):
 <p class="mono muted" style="margin-bottom:20px"><a href="shop.html">Shop</a> / {E(p["job"])}</p>
 <div class="pdp" data-pdp>
 <div class="pdp-left"><div class="pdp-media tone"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag"><span class="stock-tag" style="background:#f0643a;color:#121412">Pack shots: 1600px re-export needed</span></div>
-<ul class="pdp-trust"><li>{I_SHIELD}<span><b>Not eaten? Money back</b>Palatability guarantee</span></li><li>{I_TRUCK}<span><b>Free metro delivery</b>on orders over ${FREE_SHIP}</span></li><li>{I_STAR}<span><b>Australian made</b>and family owned</span></li></ul></div>
+<ul class="pdp-trust pdp-trust-d"><li>{I_SHIELD}<span><b>Not eaten? Money back</b>Palatability guarantee</span></li><li>{I_TRUCK}<span><b>Free metro delivery</b>on orders over ${FREE_SHIP}</span></li><li>{I_STAR}<span><b>Australian made</b>and family owned</span></li></ul></div>
 <div class="stack-l">
 <div class="stack"><span class="tag tag-ember" style="align-self:flex-start">{E(p["job"])}</span>
 <h1 class="d d-lg" style="font-size:clamp(44px,6vw,80px)">{E(p["name"])}</h1>
@@ -515,6 +515,7 @@ def product(p):
 {sub_block}
 <div class="stack" style="gap:8px"><button class="btn btn-ember btn-block" type="button" data-atc data-id="{p["slug"]}" data-name="{E(p["name"])}" data-img="assets/img/product/{p["img"]}">{CART_SVG}<span data-atc-label>Add to cart · subscribe</span></button>{perday}
 <p class="small muted center">Secure checkout · free metro delivery over ${FREE_SHIP}</p></div>
+<ul class="pdp-trust pdp-trust-m"><li>{I_SHIELD}<span><b>Not eaten? Money back</b>Palatability guarantee</span></li><li>{I_TRUCK}<span><b>Free metro delivery</b>on orders over ${FREE_SHIP}</span></li><li>{I_STAR}<span><b>Australian made</b>and family owned</span></li></ul>
 <div class="ship-box" data-postcode><label class="lbl" for="pc">Delivery to your postcode</label>
 <div class="field"><input id="pc" inputmode="numeric" maxlength="4" placeholder="e.g. 3757"><button class="btn btn-ink" type="button" style="min-height:48px">Check</button></div>
 <p class="small" data-postcode-out>Metro: free over ${FREE_SHIP}. Regional: freight shown before you pay.</p></div>

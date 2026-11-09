@@ -787,3 +787,6 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 .hero-pd-t b{font-size:16px;opacity:1}
 .hero .small .stars{vertical-align:-2px;margin-right:4px}
 .hero .small .stars svg{width:14px;height:14px}
+/* trust row: under the bag on desktop, under Add to cart on mobile/tablet */
+@media (max-width:979px){.pdp-trust-d{display:none}}
+@media (min-width:980px){.pdp-trust-m{display:none}}
