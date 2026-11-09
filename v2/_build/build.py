@@ -214,7 +214,7 @@ def dogcard(t, name, tag, vid):
 
 
 PD_BASIS = {'dog': (180, '30 kg adult'), 'puppy': (205, '15 kg pup, 4–6 mo'), 'supplement': (3, '20 kg dog'), 'cat': (80, '4 kg cat, est.')}
-CART_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>'
+CART_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h2.6l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2l1.6-7.3H6.1"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></svg>'
 
 
 def ico(d):
@@ -243,7 +243,7 @@ def usp_bar():
 
 def needs_block():
     tiles = ''.join(f'<a class="need" href="{h}"><span class="need-ic tone">{ic}</span><span class="need-t">{t}</span><span class="need-s">{s} →</span></a>' for h, t, s, ic in NEEDS)
-    return plain_section(f'<div class="row between" style="margin-bottom:24px;align-items:baseline"><h2 class="h2">Shop by need</h2><a class="link" href="shop.html">See the full range →</a></div><div class="needs">{tiles}</div>', 'alt', 'pad-s')
+    return plain_section(f'<div class="row between" style="margin-bottom:24px;align-items:baseline"><h2 class="d d-md">Shop by need</h2><a class="link" href="shop.html">See the full range →</a></div><div class="needs">{tiles}</div>', 'alt', 'pad-s')
 
 
 TL_DETAIL = {
@@ -299,7 +299,7 @@ def buy_box(p, compact=True):
     return f'''<div class="buy" data-buy data-id="{p["slug"]}" data-name="{E(p["name"])}" data-img="assets/img/product/{p["img"]}">
 {'' if one else f'<div class="szs" role="group" aria-label="Bag size">{sz}</div>'}{sz if one else ''}
 <div class="buy-price"><span class="bp" data-bp>{money(d[2])}</span><span class="bpd"><b data-bpd>{money(round(pday(p, d[1], d[2]), 2))}</b>/day<span class="bpx"> · {basis(p)[1]}</span></span></div>
-<div class="buy-ctas"><button class="btn btn-ember" type="button" data-add>{CART_SVG}Add to cart</button><a class="btn btn-line" href="{p["slug"]}.html">Shop now</a></div>
+<div class="buy-ctas"><button class="btn btn-ember" type="button" data-add>{CART_SVG}Add to cart</button><a class="btn btn-line" href="{p["slug"]}.html">View product</a></div>
 </div>'''
 
 
@@ -371,15 +371,15 @@ def home():
 </section>
 {usp_bar()}
 
-{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md" style="max-width:12ch">Three feeds. One job each.</h2>
+{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md">Three feeds. One job each.</h2>
 <p class="muted" style="max-width:28em">Formulated with Bill Wiadrowski, animal nutritionist since 1986. 97.2% Australian ingredients. Real meat first. Price per day is worked out from the feeding table printed on the bag. Bigger bags work out cheaper.</p></div>
 <div class="feeds">{feeds}</div>
-<div class="row between mt" style="border:1px solid var(--hair);border-radius:2px;padding:18px 20px;align-items:center"><p><strong>Purple Boost</strong> <span class="muted">· purple carrot, 9-strain probiotic and prebiotic topper. Add it to any bowl.</span></p><div class="row" style="gap:10px;align-items:center"><span style="font-weight:700">From $43</span><a class="btn btn-line" href="purple-boost.html">Shop now</a></div></div>""", theme='', sid='formula')}
+<div class="row between mt" style="border:1px solid var(--hair);border-radius:2px;padding:18px 20px;align-items:center"><p><strong>Purple Boost</strong> <span class="muted">· purple carrot, 9-strain probiotic and prebiotic topper. Add it to any bowl.</span></p><div class="row" style="gap:10px;align-items:center"><span style="font-weight:700">From $43</span><a class="btn btn-line" href="purple-boost.html">View product</a></div></div>""", theme='', sid='formula')}
 {featured_review(t['kern'])}
 {needs_block()}
 {calc_block('<div class="calc-head"><p class="mono steel">Feeding calculator</p><h2 class="d d-md">Take out the guesswork.</h2><p class="muted">Four questions. Which food, how much a day, how long a bag lasts and what it costs.</p></div>').replace('<section class="sec">', '<section class="sec" id="calculator">', 1)}
 
-{rail_section(2, 'Origin', f"""<div class="split split-wide" style="align-items:end"><h2 class="d d-md" style="max-width:16ch">A dog let him down when it counted.</h2>
+{rail_section(2, 'Origin', f"""<div class="split split-wide" style="align-items:end"><h2 class="d d-md">A dog let him down when it counted.</h2>
 <div class="stack"><p class="muted">Training wasn't enough, so Kris turned to breeding. Decades on, he'd learned two things make a performance dog: breeding and nutrition. When his sponsor's food changed and his dogs lost condition, he built his own.</p>
 <a class="link" href="story.html">Read Kris's story →</a></div></div>
 <div class="mt">{timeline()}</div>""", theme='alt')}
@@ -392,11 +392,11 @@ def home():
 
 <section class="sec" style="border-top:1px solid var(--hair)"><div class="wrap"><div class="rail pad"><span class="node" style="top:80px"></span>
 <p class="mono file steel">File 04 · The dogs</p>
-<div class="row between" style="margin-bottom:40px"><h2 class="d d-md" style="max-width:18ch">Fed to dogs with a job&nbsp;to&nbsp;do.</h2><a class="link" href="reviews.html">Read all {len(T)} →</a></div>
+<div class="row between" style="margin-bottom:40px"><h2 class="d d-md">Fed to dogs with a job to do.</h2><a class="link" href="reviews.html">Read all {len(T)} →</a></div>
 <div class="g3">{dogs}</div>
 </div></div></section>
 
-{rail_section(5, 'The difference', f"""<h2 class="d d-md" style="max-width:20ch;margin-bottom:32px">What sets it apart from supermarket "premium"</h2>
+{rail_section(5, 'The difference', f"""<h2 class="d d-md" style="margin-bottom:32px">What sets it apart from supermarket "premium"</h2>
 <div class="tbl-wrap"><table class="tbl stk"><thead><tr><th></th><th>Performadog</th><th>Typical supermarket premium</th></tr></thead><tbody>
 <tr><td><strong>Built for</strong></td><td class="us" data-l="Performadog">Working dogs first. Fed in the Von Forell kennel since 2015</td><td data-l="Typical supermarket premium">The average pet</td></tr>
 <tr><td><strong>Who formulated it</strong></td><td class="us" data-l="Performadog">Bill Wiadrowski, animal nutritionist since 1986</td><td data-l="Typical supermarket premium">Usually unnamed</td></tr>
@@ -448,23 +448,23 @@ def product(p):
     is_dog = p['kind'] == 'dog'
     pd = per_day(default[2], 15) if (is_dog and p['slug'] != 'puppy-lamb-and-fish') else None
     perday = f'<p class="small muted center">Works out at <strong class="ember" data-pdp-pd>{money(round(pday(p, default[1], default[2]), 2))}/day</strong> for a {basis(p)[1]}, from the feeding table on the bag</p>'
-    analysis = ''.join(f'<tr><td>{k}</td><td style="text-align:right;font-weight:700">{v}</td></tr>' for k, v in p['analysis'])
+    analysis = ''.join(f'<div class="kv-i"><span>{k}</span><b>{v}</b></div>' for k, v in p['analysis'])
     an_note = f'<p class="small mt-s">{tbc("Figures from the current website. Kris to confirm against the bag")}</p>' if p.get('analysis_tbc') else ''
     ings = ''
     if p.get('ings'):
         li = ''.join(f'<li class="{"top" if i < 5 else ""}">' + (f'<a href="{ing_link(x)}">{E(x)}</a>' if ing_link(x) else E(x)) + '</li>' for i, x in enumerate(p['ings']))
-        ings = f'''<div class="stack"><h2 class="h2">What's in it</h2><p class="muted">Main ingredients in order, then a full vitamin and mineral premix. Preserved naturally with vitamin E and rosemary oil.</p>
+        ings = f'''<div class="stack"><h2 class="h3">What's in it</h2><p class="muted">Main ingredients in order, then a full vitamin and mineral premix. Preserved naturally with vitamin E and rosemary oil.</p>
 <ul class="ing">{li}</ul>{('<p class="small">' + tbc('Order to confirm against the current bag') + '</p>') if p.get('ings_tbc') else ''}<a class="link" href="ingredients.html">See every ingredient and where it comes from →</a></div>'''
     feeding = ''
     if is_dog:
-        rows = ''.join(f'<tr><td>{w}</td><td>{g}</td></tr>' for w, g in BAG_TABLE)
-        feeding = f'''<div class="stack"><h2 class="h2">How much to feed</h2><p class="muted">From the table printed on the bag. Split it into two meals. Add about 15% on heavy work days; ease off for a lighter dog.</p>
-<div class="tbl-wrap"><table class="tbl" style="min-width:0"><thead><tr><th>Dog weight</th><th>Per day</th></tr></thead><tbody>{rows}</tbody></table></div>
+        rows = ''.join(f'<div class="kv-i kv-feed"><span>{w}</span><b>{g}</b><small>a day</small></div>' for w, g in BAG_TABLE)
+        feeding = f'''<div class="stack"><div class="ic-head"><h2 class="h3">How much to feed</h2><p class="small muted">From the table printed on the bag. Split it into two meals. Add about 15% on heavy work days; ease off for a lighter dog.</p></div>
+<div class="kv kv-5">{rows}</div>
 <a class="link" href="feeding-guide.html">Work it out for your dog →</a></div>'''
     elif p['slug'] == 'purple-boost':
-        feeding = '<div class="stack"><h2 class="h2">How to use it</h2><p class="muted">One 3 g scoop per 20 kg of dog, once a day, sprinkled over the food. Cats: a pinch. Start with half for the first few days when changing food.</p></div>'
+        feeding = '<div class="stack"><h2 class="h3">How to use it</h2><p class="muted">One 3 g scoop per 20 kg of dog, once a day, sprinkled over the food. Cats: a pinch. Start with half for the first few days when changing food.</p></div>'
     else:
-        feeding = f'<div class="stack"><h2 class="h2">How much to feed</h2><p class="muted">From about 30–45 g a day for a 1–2 kg cat up to 110–130 g for a 6–7 kg cat. {tbc("Full table to confirm from the bag")}</p></div>'
+        feeding = f'<div class="stack"><h2 class="h3">How much to feed</h2><p class="muted">From about 30–45 g a day for a 1–2 kg cat up to 110–130 g for a 6–7 kg cat. {tbc("Full table to confirm from the bag")}</p></div>'
     for_who = ''.join(f'<li>{E(x)}</li>' for x in p['for_who'])
     rel = {'turkey-grain-free': ['kern', 'craig', 'allgemein'], 'ocean-fish': ['jones-walker', 'talty', 'carrington'],
            'puppy-lamb-and-fish': ['wright', 'walker', 'blackburn'], 'purple-boost': ['eadweards'],
@@ -483,12 +483,9 @@ def product(p):
 <button class="opt" type="button" aria-pressed="false" data-mode="once"><span class="top"><span>One-time purchase</span><span data-once-price>{money(default[2])}</span></span></button></div>'''
     big_spec = ''
     if is_dog or p['kind'] == 'cat':
-        big_spec = plain_section(f'''<div class="spec">
-<div class="stat"><p class="n">{p["analysis"][0][1]}</p><span class="mono">Crude protein (min)</span></div>
-<div class="stat"><p class="n">{p["analysis"][1][1]}</p><span class="mono">Crude fat (min)</span></div>
-<div class="stat"><p class="n">{p["analysis"][4][1]}</p><span class="mono">Calcium</span></div>
-<div class="stat"><p class="n">{"97.2%" if is_dog else "Taurine"}</p><span class="mono">{"Australian ingredients" if is_dog else "Added for cats"}</span></div>
-<div class="stat"><p class="n">0</p><span class="mono">Chicken</span></div></div>''', 'tone', 'pad-s')
+        hl = [(p["analysis"][0][1], 'Crude protein', 'minimum'), (p["analysis"][1][1], 'Crude fat', 'minimum'), (p["analysis"][4][1], 'Calcium', 'for bone and joint'),
+              ("97.2%" if is_dog else "Taurine", "Australian ingredients" if is_dog else "Added for cats", "made and owned here" if is_dog else "for heart and eyes"), ('0', 'Chicken', 'none in the bag')]
+        big_spec = ''.join(f'<div class="hl"><p class="hl-n">{n}</p><p class="hl-t">{t}</p><p class="hl-s">{s_}</p></div>' for n, t, s_ in hl)
     body = f'''<section class="sec"><div class="wrap" style="padding-top:28px;padding-bottom:72px">
 <p class="mono muted" style="margin-bottom:20px"><a href="shop.html">Shop</a> / {E(p["job"])}</p>
 <div class="pdp" data-pdp>
@@ -509,17 +506,25 @@ def product(p):
 <ul class="ticks"><li>Australian made &amp; owned</li><li>Palatability guarantee</li><li>Dispatched within 24 hrs</li><li>No chicken</li></ul>
 </div></div></div></section>
 <div class="sticky-atc" data-sticky-atc hidden><div class="wrap"><img src="assets/img/product/{p["img"]}" alt=""><div class="sa-txt"><b>{E(p["name"])}</b><span data-sa-price>{money(default[2])} · {default[0]}</span></div><button class="btn btn-ember" type="button" data-sa-add>Add to cart</button></div></div>
-{big_spec}
-<section class="sec"><div class="wrap pad"><div class="split">
-<div class="stack-l">
-<div class="stack"><h2 class="h2">Who it's for</h2><ul class="ticks" style="grid-template-columns:1fr;font-size:16px">{for_who}</ul></div>
-<div class="stack"><h2 class="h2">{"Typical analysis" if p["kind"] != "supplement" else "What's in a scoop"}</h2><div class="tbl-wrap"><table class="tbl" style="min-width:0"><tbody>{analysis}</tbody></table></div>{an_note}
-{"<p class='small muted'>Formulated to meet Australian and AAFCO nutrient standards. " + tbc("Kris: confirm the exact AAFCO / AS 5812 statement") + "</p>" if p["kind"] != "supplement" else ""}</div>
+<section class="sec pdp-info"><div class="wrap pad stack-l">
+{f'<div class="stack"><p class="mono steel">At a glance</p><div class="hls">{big_spec}</div></div>' if big_spec else ''}
+<div class="info-2">
+<div class="info-card"><h2 class="h3">Who it's for</h2><ul class="ticks" style="grid-template-columns:1fr;font-size:16px">{for_who}</ul></div>
+<div class="info-card">{ings or feeding}</div>
 </div>
-<div class="stack-l">{ings}{feeding}</div>
+<div class="info-card"><div class="ic-head"><h2 class="h3">{"Typical analysis" if p["kind"] != "supplement" else "What's in a scoop"}</h2>{"<p class='small muted'>Formulated to meet Australian and AAFCO nutrient standards. " + tbc("Kris: confirm the exact AAFCO / AS 5812 statement") + "</p>" if p["kind"] != "supplement" else ""}</div>
+<div class="kv">{analysis}</div>{an_note}</div>
+{f'<div class="info-card">{feeding}</div>' if ings else ''}
+</div></section>
+<section class="sec alt kris-band"><div class="wrap pad"><div class="kris-grid">
+<div class="kris-img"><img src="{IMG['kris']['src']}" alt="Kris Kotsopoulos with a Von Forell Dobermann" loading="lazy"></div>
+<div class="stack-l"><div class="stack"><p class="mono steel">Who makes it</p><h2 class="d d-md">Built by a breeder, not a marketing team.</h2>
+<p class="muted">Kris Kotsopoulos has bred and trained working dogs for over 45 years. When his sponsor's food changed and his dogs lost condition, he built his own with animal nutritionist Bill Wiadrowski. Every bag is fed in his Von Forell kennel first.</p></div>
+<ol class="kris-tl"><li><b>1980</b><span>First Dobermann</span></li><li><b>2000</b><span>Co-founds Detector Dogs Australia</span></li><li><b>2015</b><span>Performadog fed in the kennel</span></li></ol>
+<a class="btn btn-line" href="story.html">Read Kris's story and timeline</a></div>
 </div></div></section>
 <section class="sec" id="reviews" style="border-top:1px solid var(--hair)"><div class="wrap pad">{reviews}</div></section>
-{('' if p['slug'] == 'purple-boost' else plain_section(f"""<div class="row between" style="align-items:center"><div class="row" style="align-items:center;gap:20px"><img src="assets/img/product/purple_boost_3-cut.webp" alt="Purple Boost" style="height:120px;width:auto"><div class="stack" style="gap:6px"><p class="mono steel">Add to this bowl</p><h2 class="h2">Purple Boost</h2><p class="muted small">Purple carrot, 9-strain probiotic and prebiotic. From $43.</p></div></div><div class="row" style="gap:10px"><button class="btn btn-ember" type="button" data-quick-add data-id="purple-boost" data-name="Purple Boost" data-size="180 g" data-price="43" data-img="assets/img/product/purple_boost_3-cut.webp">{CART_SVG}Add · $43</button><a class="btn btn-line" href="purple-boost.html">Shop now</a></div></div>""", '', 'pad-s'))}
+{('' if p['slug'] == 'purple-boost' else plain_section(f"""<div class="row between info-card upsell" style="align-items:center;flex-direction:row"><div class="row" style="align-items:center;gap:20px"><img src="assets/img/product/purple_boost_3-cut.webp" alt="Purple Boost" style="height:120px;width:auto"><div class="stack" style="gap:6px"><p class="mono steel">Add to this bowl</p><h2 class="h2">Purple Boost</h2><p class="muted small">Purple carrot, 9-strain probiotic and prebiotic. From $43.</p></div></div><div class="row" style="gap:10px"><button class="btn btn-ember" type="button" data-quick-add data-id="purple-boost" data-name="Purple Boost" data-size="180 g" data-price="43" data-img="assets/img/product/purple_boost_3-cut.webp">{CART_SVG}Add · $43</button><a class="btn btn-line" href="purple-boost.html">View product</a></div></div>""", '', 'pad-s'))}
 {faq_block(product_faqs(p))}
 {cta_band()}'''
     return page(f'{p["slug"]}.html', f'{p["full"]} | Performadog', p['blurb'], body, 'shop.html')
@@ -559,7 +564,7 @@ def story():
 <p class="muted">Kris co-founded Detector Dogs Australia in 2000. Its teams search venues like the MCG and Marvel Stadium, the Port of Melbourne, hospitals and major events. Kris has been interviewed by SBS and Channel 9 about the work.</p>
 <p class="small muted">{tbc("NFL letter (Shannon Bodley, NFL Security) goes here once Kris has written permission")}</p></div>{pic('kris_sbs', '', 'ratio-11')}</div>
 <div class="strip mt-l">{''.join(f'<figure>{pic(s, "", "ratio-43")}<figcaption class="mono muted">{c}</figcaption></figure>' for s, c in (('dda1', 'MCG'), ('dda2', 'Port of Melbourne'), ('dda5', 'Grand Slam Oval'), ('dda4', 'Rubble search')))}</div></div></section>
-{rail_section(1, '45 years with working dogs', f'<h2 class="d d-md" style="max-width:18ch;margin-bottom:32px">From one Dobermann to Detector Dogs Australia</h2>{timeline()}<p class="small muted mt">{tbc("Kris to sign off every date")}, his own sites give 1980 and 1981 for the first Dobermann.</p>')}
+{rail_section(1, '45 years with working dogs', f'<h2 class="d d-md" style="margin-bottom:32px">From one Dobermann to Detector Dogs Australia</h2>{timeline()}<p class="small muted mt">{tbc("Kris to sign off every date")}, his own sites give 1980 and 1981 for the first Dobermann.</p>')}
 <section class="sec"><div class="wrap pad"><div class="g2">
 <article class="stack">{pic('bill', 'Photo: Bill Wiadrowski', 'ratio-43')}<p class="mono steel">The nutritionist</p><h2 class="h2">Bill Wiadrowski</h2>
 <p class="muted">Animal nutritionist designing dog and cat diets since 1986, and the mind behind Nutrient Ramping. Kris and Bill have built Performadog together since 2018. {tbc("Qualifications")}</p><a class="link" href="science.html#bill">Watch Bill answer 41 questions →</a></article>

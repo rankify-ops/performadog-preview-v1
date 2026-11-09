@@ -213,3 +213,56 @@ body.glass{background:var(--cream)}
   .glass .rail::before,.glass .rail .node{display:none}
   .glass .fr-img img{object-position:50% 70%}
 }
+
+/* ======================= v3.2 fixes ======================= */
+/* Real blur in the mega menu: a backdrop-filter on the header made the header a backdrop root,
+   so the menu inside it had nothing to blur. Move the header's frost to a pseudo-element. */
+.glass .hdr{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.glass .hdr::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(250,244,234,.72);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);box-shadow:0 1px 0 rgba(255,255,255,.7),0 10px 30px -20px rgba(90,45,15,.35)}
+.glass .mm{background:linear-gradient(180deg,rgba(252,247,239,.82),rgba(248,240,228,.74))!important;-webkit-backdrop-filter:blur(30px) saturate(180%)!important;backdrop-filter:blur(30px) saturate(180%)!important;border-top:1px solid rgba(255,255,255,.8);box-shadow:0 30px 60px -20px rgba(90,45,15,.35)}
+.glass .mm-learn,.glass .mm-prod{background:rgba(255,255,255,.55)!important}
+.glass .mm-learn:hover,.glass .mm-prod:hover{background:rgba(255,255,255,.85)!important}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass .mm,.glass .hdr::before{background:#faf4ea!important}}
+.glass .drawer{background:rgba(250,244,234,.97)}
+
+/* Equal cards: stretch to row height, buttons pinned to the bottom */
+.glass .feeds,.glass #grid{align-items:stretch}
+.glass .feed,.glass .pcard{height:100%;display:flex;flex-direction:column}
+.glass .pcard .pbody{flex:1;display:flex;flex-direction:column}
+.glass :is(.feed,.pcard) .buy{margin-top:auto}
+@media (max-width:600px){
+  .glass :is(.feed,.pcard) h3{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+  .glass .pcard .tag,.glass .feed > div:first-child{min-height:20px}
+  .glass :is(.feed,.pcard) .buy-ctas .btn-line{display:flex;min-height:40px;font-size:13px;background:rgba(255,255,255,.5)}
+  .glass :is(.feed,.pcard) .buy-ctas{gap:6px}
+  .glass .feeds > .feed:last-child:nth-child(odd){grid-column:auto}
+}
+.glass .link{text-wrap:balance}
+
+/* ======================= v3.3 audit fixes ======================= */
+/* Bottom CTA band keeps its brand-orange background (the transparent-section rule had wiped it) */
+.glass section.cta-band.tone{background:linear-gradient(115deg,#b52f16 0%,#cf3d18 55%,#e0581c 100%)!important;position:relative;overflow:hidden;isolation:isolate}
+.glass section.cta-band.tone::after{content:""!important;position:absolute;inset:0;z-index:-1;background:radial-gradient(40% 70% at 85% 30%,rgba(247,168,35,.45),transparent 70%),radial-gradient(35% 60% at 10% 90%,rgba(120,20,10,.35),transparent 70%);pointer-events:none}
+.glass .cta-band .btn-ember{background:#fff;color:#1a1714;box-shadow:0 10px 24px -10px rgba(0,0,0,.35)}
+.glass .cta-band .btn-line{background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.8);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+/* Readability: nothing under 12px */
+.glass .tcard .mono,.glass .tcard .disclose,.glass .disclose,.glass .fr-body .disclose{font-size:12px}
+@media (max-width:600px){.glass .feed > div:first-child p,.glass .pcard .tag{font-size:11px}}
+/* Bigger tap targets for text links on phones */
+@media (max-width:760px){
+  .glass a.link,.glass .rating{display:inline-flex;align-items:center;min-height:44px}
+  .glass .ing-links a,.glass .rel a,.glass .prose-side a{display:inline-block;padding:10px 0}
+}
+/* PDP info cards in glass */
+.glass .pdp-info .wrap{position:relative;isolation:isolate}
+.glass .pdp-info .wrap::before{content:"";position:absolute;inset:40px -20px;z-index:-1;pointer-events:none;filter:blur(28px);background:var(--glow);opacity:.55}
+.glass :is(.hl,.info-card){background:var(--glass-bg)!important;-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line)!important;box-shadow:var(--glass-sh)}
+.glass .kv-i{background:rgba(255,255,255,.55);border-color:rgba(255,255,255,.8)}
+.glass .hl-n{color:var(--ink)}
+.glass .kris-img{border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:24px}
+.glass .kris-grid{position:relative;isolation:isolate}
+.glass .kris-grid::before{content:"";position:absolute;inset:-40px 50% -40px -10%;z-index:-1;filter:blur(30px);background:var(--glow);opacity:.5}
+@media (max-width:760px){.glass :is(.hl,.info-card){-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
+/* glows must never widen the page */
+html,body.glass{overflow-x:clip}
+.glass main{overflow-x:clip}
