@@ -109,3 +109,107 @@ body.glass{background:var(--cream)}
 .glass .chip.on,.glass .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .glass .ship-box{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:18px}
 .glass .ship-box input{border-radius:999px;background:rgba(255,255,255,.7)}
+
+/* ======================= v3.1: Speedy Needle layout, studied closely ======================= */
+
+/* Header: no Shop now. Mobile/tablet = burger left, logo centre, cart right (Speedy .sn-hbar) */
+.glass .btn-shop{display:none!important}
+@media (max-width:1179px){
+  .glass .hdr > .wrap{display:grid!important;grid-template-columns:44px 1fr 44px;align-items:center;column-gap:4px;height:64px}
+  .glass .hdr-actions{display:contents!important}
+  .glass .menu-btn{grid-column:1;grid-row:1;justify-self:start}
+  .glass .hdr .logo{grid-column:2;grid-row:1;justify-self:center}
+  .glass .cart-btn{grid-column:3;grid-row:1;justify-self:end}
+  .glass .hdr .logo img{height:30px}
+  .glass .menu-btn,.glass .cart-btn{background:none!important;border:0!important;width:44px;min-width:44px;padding:0;color:var(--ink)}
+  .glass .menu-btn .hide-s{display:none}
+  .glass .menu-btn svg,.glass .cart-btn svg{width:22px;height:22px}
+  .glass .cart-count{top:2px;right:0}
+}
+@media (min-width:1180px){.glass .cart-btn{background:rgba(255,255,255,.5)}}
+
+/* Hero: full-bleed photo, dark gradient from the left, cream type (Speedy hero) */
+.glass .hero{position:relative;background:#141210;overflow:hidden;padding:0}
+.glass .hero .wrap{position:static}
+.glass .hero2{display:block!important;padding:0!important}
+.glass .hero-shot{position:absolute!important;inset:0;aspect-ratio:auto!important;border-radius:0!important;margin:0;order:0}
+.glass .hero-shot img{width:100%;height:100%;object-fit:cover;object-position:68% 40%!important;border-radius:0!important}
+.glass .hero-shot .track{display:none}
+.glass .hero-shot::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,18,16,.9) 0%,rgba(20,18,16,.62) 42%,rgba(20,18,16,.12) 75%,rgba(20,18,16,0) 100%)}
+.glass .hero-shot::before{content:"";position:absolute;left:0;right:0;bottom:0;height:44px;z-index:1;background:linear-gradient(180deg,rgba(242,232,216,0),var(--cream))}
+.glass .hero-copy{position:relative;z-index:2;max-width:640px;padding:110px 0 170px;color:#f1e6cf;gap:26px}
+.glass .hero .d{color:#fff}
+.glass .hero .d .ember{color:#f28a3a}
+.glass .hero .lead{color:#e9dcc2;max-width:30em}
+.glass .hero .small.muted{color:#cdbfa6}
+.glass .hero .link{color:#f1e6cf;text-decoration-color:rgba(241,230,207,.6)}
+.glass .hero .btn-lg{min-height:58px;padding:0 34px}
+@media (min-width:980px){.glass .hero .d-xl{font-size:clamp(56px,6.4vw,104px)}}
+@media (max-width:979px){
+  .glass .hero{min-height:0}
+  .glass .hero-shot img{object-position:72% 30%!important}
+  .glass .hero-shot::after{background:linear-gradient(180deg,rgba(20,18,16,.15) 0%,rgba(20,18,16,.55) 38%,rgba(20,18,16,.9) 70%,rgba(20,18,16,.94) 100%)}
+  .glass .hero-copy{padding:220px 0 130px;gap:20px}
+  .glass .hero .d-xl{font-size:clamp(44px,12vw,72px)}
+  .glass .hero-copy > .row{flex-direction:column;align-items:stretch!important;gap:14px!important}
+  .glass .hero-copy > .row .btn{width:100%;justify-content:center}
+  .glass .hero-copy > .row .link{align-self:center}
+  .glass .hero .small.muted{text-align:center}
+}
+
+/* Trust bar: floating glass card overlapping the hero, 4 cards (2x2 on mobile), icon + title + line */
+.glass .usp.tone{position:relative;z-index:3;margin-top:-88px;padding:0}
+.glass .usp ul{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px!important;padding:8px!important;min-height:0;border-radius:20px;justify-content:stretch}
+.glass .usp li,.glass .usp li.on{display:flex!important;align-items:center;gap:14px;padding:16px;border-radius:14px;min-width:0;white-space:normal;background:linear-gradient(160deg,rgba(255,255,255,.4),rgba(255,255,255,0) 70%);border:1px solid rgba(255,255,255,.5);font-size:14px;line-height:1.4;color:#5e5344}
+.glass .usp li span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.glass .usp li b{color:var(--ink);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.03em}
+.glass .usp svg{width:30px;height:30px;color:var(--ember)}
+@media (max-width:1099px){.glass .usp ul{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-width:600px){
+  .glass .usp.tone{margin-top:-72px}
+  .glass .usp ul{gap:6px!important;padding:6px!important}
+  .glass .usp li,.glass .usp li.on{flex-direction:column;align-items:flex-start;gap:10px;padding:12px;font-size:12px;line-height:1.35}
+  .glass .usp li b{font-size:13px}
+  .glass .usp svg{width:28px;height:28px}
+}
+
+/* Section heads like Speedy: uppercase link with underline */
+.glass .link{text-transform:uppercase;letter-spacing:.06em;font-size:14px;font-weight:700}
+
+/* Products: 2 columns on mobile, lean Speedy card (meta, name, price, one button) */
+@media (max-width:600px){
+  .glass .feeds,.glass #grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px 12px!important}
+  .glass .feeds::before,.glass #grid::before{inset:-30px -12px}
+  .glass .feed,.glass .pcard{padding:0 0 12px!important;gap:8px!important;border-radius:16px}
+  .glass .feed > div:first-child{order:2;padding:0 10px!important}
+  .glass .feed > div:first-child p:first-child{display:none}
+  .glass .feed > div:first-child p{font-size:10px;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .glass .feed .pack,.glass .feed .pack.tone{order:1;height:auto;aspect-ratio:1/1;margin:8px 8px 0;padding:10px;border-radius:12px}
+  .glass .feed .row,.glass .feed > p.muted,.glass .pcard .pbody > p.muted{display:none!important}
+  .glass .feed h3{order:3;font-size:16px!important;line-height:1.25}
+  .glass .feed .buy{order:4}
+  .glass .feed > *:not(.pack){padding-left:10px;padding-right:10px}
+  .glass .pcard .pimg,.glass .pcard .pimg.tone{margin:8px 8px 0;padding:10px;aspect-ratio:1/1}
+  .glass .pcard .badge{font-size:9px;padding:3px 7px;top:8px;left:8px}
+  .glass .pcard .pbody{padding:10px 10px 0;gap:6px}
+  .glass .pcard .tag{font-size:10px;padding:2px 8px;align-self:flex-start;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .glass .pcard h3{font-size:16px!important;line-height:1.25}
+  .glass :is(.feed,.pcard) .szs{display:none}
+  .glass :is(.feed,.pcard) .buy{border-top:0;padding-top:0;gap:8px;margin-top:auto}
+  .glass :is(.feed,.pcard) .buy-price{flex-direction:column;gap:0}
+  .glass :is(.feed,.pcard) .bp{font-size:20px}
+  .glass :is(.feed,.pcard) .bpd{font-size:12px}
+  .glass :is(.feed,.pcard) .bpd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .glass :is(.feed,.pcard) .buy-ctas{grid-template-columns:1fr}
+  .glass :is(.feed,.pcard) .buy-ctas .btn-line{display:none}
+  .glass :is(.feed,.pcard) .buy-ctas .btn{min-height:44px;font-size:13px;padding:0 10px;gap:6px}
+  .glass :is(.feed,.pcard) .buy-ctas .btn svg{width:16px;height:16px}
+}
+.glass .hero-shot img{object-position:68% 22%!important}
+@media (max-width:979px){.glass .hero-shot img{object-position:60% 8%!important}}
+@media (max-width:600px){
+  .glass :is(.feed,.pcard) .bpx{display:none}
+  .glass .rail{padding-left:0}
+  .glass .rail::before,.glass .rail .node{display:none}
+  .glass .fr-img img{object-position:50% 70%}
+}

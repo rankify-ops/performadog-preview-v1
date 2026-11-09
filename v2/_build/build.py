@@ -123,7 +123,7 @@ def page(fname, title, desc, body, active=None):
 </body>
 </html>'''
     with open(os.path.join(OUT, fname), 'w') as f:
-        f.write(doc)
+        f.write(doc.replace(' →', '&nbsp;→'))
     return fname
 
 
@@ -298,7 +298,7 @@ def buy_box(p, compact=True):
     one = len([s for s in p['sizes'] if s[2]]) == 1
     return f'''<div class="buy" data-buy data-id="{p["slug"]}" data-name="{E(p["name"])}" data-img="assets/img/product/{p["img"]}">
 {'' if one else f'<div class="szs" role="group" aria-label="Bag size">{sz}</div>'}{sz if one else ''}
-<div class="buy-price"><span class="bp" data-bp>{money(d[2])}</span><span class="bpd"><b data-bpd>{money(round(pday(p, d[1], d[2]), 2))}</b>/day · {basis(p)[1]}</span></div>
+<div class="buy-price"><span class="bp" data-bp>{money(d[2])}</span><span class="bpd"><b data-bpd>{money(round(pday(p, d[1], d[2]), 2))}</b>/day<span class="bpx"> · {basis(p)[1]}</span></span></div>
 <div class="buy-ctas"><button class="btn btn-ember" type="button" data-add>{CART_SVG}Add to cart</button><a class="btn btn-line" href="{p["slug"]}.html">Shop now</a></div>
 </div>'''
 
