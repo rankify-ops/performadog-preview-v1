@@ -282,6 +282,19 @@ def pday(p, kg, price):
     return price / (kg * 1000 / g)
 
 
+
+def _min_pd():
+    best = None
+    for p in PRODUCTS:
+        if p['kind'] != 'dog' or p['slug'] == 'puppy-lamb-and-fish':
+            continue
+        for label, kg, price in p['sizes']:
+            if price:
+                v = round(pday(p, kg, price), 2)
+                if best is None or v < best[0]:
+                    best = (v, f'{p["name"]}, {basis(p)[1]}, {label} bag')
+    return best
+
 def default_size(p):
     priced = [s for s in p['sizes'] if s[2]]
     return next((s for s in priced if s[0] in ('15 kg', '1.08 kg')), priced[-1])
@@ -336,6 +349,8 @@ def lab_sheet():
 
 # ---- pages --------------------------------------------------------------------
 def home():
+    global MIN_PD
+    MIN_PD = _min_pd()
     t = {x['id']: x for x in T}
     hero = IMG.get('hero')
     if hero:
@@ -359,9 +374,10 @@ def home():
 <div class="hero2">
 <div class="hero-copy">
 <h1 class="d d-xl"><span>Bred &amp; fed</span><span class="ember">for performance.</span></h1>
-<p class="lead">Australian-made dog food, built by a breeder of working dogs and an animal nutritionist. Fed to sport, working and family dogs since 2015.</p>
+<p class="lead">Premium Australian dog food, formulated by an animal nutritionist and proven on working dogs since 2015. Feed it for as little as <b class="nowrap">{money(MIN_PD[0])} a day</b>.</p>
+<div class="hero-pd"><span class="hero-pd-n">{money(MIN_PD[0])}</span><span class="hero-pd-t"><b>per day</b>{MIN_PD[1]}</span></div>
 <div class="row" style="gap:18px;align-items:center"><a class="btn btn-ember btn-lg" href="shop.html">Shop now</a><a class="link" href="feeding-guide.html">Find my dog's food →</a></div>
-<p class="small muted">From $48 · Rated 9/10 by Petfood Reviews</p>
+<p class="small muted">{stars()} 5.0 from {len(T)} reviews · Rated 9/10 by Petfood Reviews</p>
 </div>
 <div class="{hero_cls} hero-shot">{hero_inner}
 <svg class="track" viewBox="0 0 800 450" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 420 C 120 400, 160 330, 260 340 S 420 380, 500 290 S 640 150, 820 120" fill="none" stroke="#f0643a" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/></svg>
@@ -487,7 +503,8 @@ def product(p):
     body = f'''<section class="sec"><div class="wrap" style="padding-top:28px;padding-bottom:72px">
 <p class="mono muted" style="margin-bottom:20px"><a href="shop.html">Shop</a> / {E(p["job"])}</p>
 <div class="pdp" data-pdp>
-<div class="pdp-media tone"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag"><span class="stock-tag" style="background:#f0643a;color:#121412">Pack shots: 1600px re-export needed</span></div>
+<div class="pdp-left"><div class="pdp-media tone"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag"><span class="stock-tag" style="background:#f0643a;color:#121412">Pack shots: 1600px re-export needed</span></div>
+<ul class="pdp-trust"><li>{I_SHIELD}<span><b>Not eaten? Money back</b>Palatability guarantee</span></li><li>{I_TRUCK}<span><b>Free metro delivery</b>on orders over ${FREE_SHIP}</span></li><li>{I_STAR}<span><b>Australian made</b>and family owned</span></li></ul></div>
 <div class="stack-l">
 <div class="stack"><span class="tag tag-ember" style="align-self:flex-start">{E(p["job"])}</span>
 <h1 class="d d-lg" style="font-size:clamp(44px,6vw,80px)">{E(p["name"])}</h1>
@@ -501,7 +518,7 @@ def product(p):
 <div class="ship-box" data-postcode><label class="lbl" for="pc">Delivery to your postcode</label>
 <div class="field"><input id="pc" inputmode="numeric" maxlength="4" placeholder="e.g. 3757"><button class="btn btn-ink" type="button" style="min-height:48px">Check</button></div>
 <p class="small" data-postcode-out>Metro: free over ${FREE_SHIP}. Regional: freight shown before you pay.</p></div>
-<ul class="ticks"><li>Australian made &amp; owned</li><li>Palatability guarantee</li><li>Dispatched within 24 hrs</li><li>No chicken</li></ul>
+
 </div></div></div></section>
 <div class="sticky-atc" data-sticky-atc hidden><div class="wrap"><img src="assets/img/product/{p["img"]}" alt=""><div class="sa-txt"><b>{E(p["name"])}</b><span data-sa-price>{money(default[2])} · {default[0]}</span></div><button class="btn btn-ember" type="button" data-sa-add>Add to cart</button></div></div>
 <section class="sec pdp-info"><div class="wrap pad stack-l">
