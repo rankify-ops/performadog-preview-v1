@@ -304,13 +304,12 @@ def buy_box(p, compact=True):
 
 
 def feed_card(p):
-    pdp = per_day(p['sizes'][2][2], 15) if p['slug'] != 'puppy-lamb-and-fish' else None
-    price_line = (f'<span class="ember" style="font-weight:700">{money(round(pdp, 2))}/day</span><span class="mono muted">30 kg adult · 15 kg bag</span>' if pdp else
-                  f'<span class="ember" style="font-weight:700">{money(round(p["sizes"][2][2] / 15, 2))}/kg</span><span class="mono muted">15 kg bag</span>')
+    stat = (f'<p class="big">{p["protein"]}<small>%</small></p><p class="mono muted" style="padding-bottom:10px">Protein<br>{p["fat"]}% fat</p>' if p.get('protein') else
+            '<p class="big">9<small>×</small></p><p class="mono muted" style="padding-bottom:10px">Probiotic strains<br>+ prebiotic</p>')
     return f'''<article class="feed">
 <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="mono">{p["code"]}</p><p class="mono muted">{p["job"]}</p></div>
 <a class="pack tone" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag" loading="lazy"></a>
-<div class="row" style="align-items:flex-end;gap:14px"><p class="big">{p["protein"]}<small>%</small></p><p class="mono muted" style="padding-bottom:10px">Protein<br>{p["fat"]}% fat</p></div>
+<div class="row" style="align-items:flex-end;gap:14px">{stat}</div>
 <h3 class="h2" style="font-size:26px"><a href="{p["slug"]}.html" style="text-decoration:none">{E(p["name"])}</a></h3>
 <p class="muted" style="font-size:15px">{E(p["blurb"])}</p>
 {buy_box(p)}
@@ -349,7 +348,7 @@ def home():
                     'Swift &amp; Rolex · Rottweilers · <span class="ember">20 km endurance test</span>', 'Koda · medical alert dog',
                     '4 New Zealand German Shepherd kennels', 'Core Canine · board &amp; train']
     tick = ''.join(f'<span>{x}</span><span class="sep">/</span>' for x in ticker_items) * 2
-    feeds = ''.join(feed_card(BY_SLUG[s]) for s in ('turkey-grain-free', 'ocean-fish', 'puppy-lamb-and-fish'))
+    feeds = ''.join(feed_card(BY_SLUG[s]) for s in ('turkey-grain-free', 'ocean-fish', 'puppy-lamb-and-fish', 'purple-boost'))
     tl = ''.join(f'<li><p class="yr">{y}</p><p class="small muted" style="margin-top:6px">{x}</p></li>' for y, x in TIMELINE if y in ('1980', '1982', '2000', '2003', '2015', '2018'))
     strip = ''.join(f'<figure>{pic(s, "", "ratio-43")}<figcaption class="mono muted">{c}</figcaption></figure>' for s, c in (('dda1', 'MCG · corporate box search'), ('dda2', 'Port of Melbourne · truck search'), ('dda3', 'Vehicle search'), ('dda4', 'Rubble search')))
     dogs = (dogcard(t['craig'], 'SAR team', 'Search &amp; rescue', 'James Craig · video to film') +
@@ -371,10 +370,9 @@ def home():
 </section>
 {usp_bar()}
 
-{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md">Three feeds. One job each.</h2>
+{rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md">Four products. One job each.</h2>
 <p class="muted" style="max-width:28em">Formulated with Bill Wiadrowski, animal nutritionist since 1986. 97.2% Australian ingredients. Real meat first. Price per day is worked out from the feeding table printed on the bag. Bigger bags work out cheaper.</p></div>
-<div class="feeds">{feeds}</div>
-<div class="row between mt" style="border:1px solid var(--hair);border-radius:2px;padding:18px 20px;align-items:center"><p><strong>Purple Boost</strong> <span class="muted">· purple carrot, 9-strain probiotic and prebiotic topper. Add it to any bowl.</span></p><div class="row" style="gap:10px;align-items:center"><span style="font-weight:700">From $43</span><a class="btn btn-line" href="purple-boost.html">View product</a></div></div>""", theme='', sid='formula')}
+<div class="feeds">{feeds}</div>""", theme='', sid='formula')}
 {featured_review(t['kern'])}
 {needs_block()}
 {calc_block('<div class="calc-head"><p class="mono steel">Feeding calculator</p><h2 class="d d-md">Take out the guesswork.</h2><p class="muted">Four questions. Which food, how much a day, how long a bag lasts and what it costs.</p></div>').replace('<section class="sec">', '<section class="sec" id="calculator">', 1)}
@@ -521,10 +519,10 @@ def product(p):
 <div class="ingd-links"><a class="btn btn-ember" data-ingd-a href="#">Read more about it</a><a class="btn btn-line" href="ingredients.html">See every ingredient</a></div></div></dialog>
 <section class="sec alt kris-band"><div class="wrap pad"><div class="kris-grid">
 <div class="kris-img"><img src="{IMG['kris']['src']}" alt="Kris Kotsopoulos with a Von Forell Dobermann" loading="lazy"></div>
-<div class="stack-l"><div class="stack"><p class="mono steel">Who makes it</p><h2 class="d d-md">Built by a breeder, not a marketing team.</h2>
+<div class="stack-l"><div class="stack"><p class="mono steel">Who makes it</p><h2 class="d d-md">Built by a performance breeder and dog nutritionist.</h2>
 <p class="muted">Kris Kotsopoulos has bred and trained working dogs for over 45 years. When his sponsor's food changed and his dogs lost condition, he built his own with animal nutritionist Bill Wiadrowski. Every bag is fed in his Von Forell kennel first.</p></div>
 <ol class="kris-tl"><li><b>1980</b><span>First Dobermann</span></li><li><b>2000</b><span>Co-founds Detector Dogs Australia</span></li><li><b>2015</b><span>Performadog fed in the kennel</span></li></ol>
-<a class="btn btn-line" href="story.html">Read Kris's story and timeline</a></div>
+<a class="btn btn-line" href="story.html">Read Kris &amp; Performadog's full story</a></div>
 </div></div></section>
 <section class="sec" id="reviews" style="border-top:1px solid var(--hair)"><div class="wrap pad">{reviews}</div></section>
 {('' if p['slug'] == 'purple-boost' else plain_section(f"""<div class="row between info-card upsell" style="align-items:center;flex-direction:row"><div class="row" style="align-items:center;gap:20px"><img src="assets/img/product/purple_boost_3-cut.webp" alt="Purple Boost" style="height:120px;width:auto"><div class="stack" style="gap:6px"><p class="mono steel">Add to this bowl</p><h2 class="h2">Purple Boost</h2><p class="muted small">Purple carrot, 9-strain probiotic and prebiotic. From $43.</p></div></div><div class="row" style="gap:10px"><button class="btn btn-ember" type="button" data-quick-add data-id="purple-boost" data-name="Purple Boost" data-size="180 g" data-price="43" data-img="assets/img/product/purple_boost_3-cut.webp">{CART_SVG}Add · $43</button><a class="btn btn-line" href="purple-boost.html">View product</a></div></div>""", '', 'pad-s'))}

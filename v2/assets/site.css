@@ -766,3 +766,8 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 @media (min-width:760px){.who-ticks{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 .ingc-c:has(.ingc-fb){background:#fbeae2}
 .wrap.stack-l,.wrap.stack{max-width:var(--max)}
+.feeds{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1100px){.feeds{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:600px){.feeds{grid-template-columns:1fr}}
+.feed .big{white-space:nowrap}
+.feed .buy-ctas{display:grid!important;grid-template-columns:1fr!important;gap:8px}.feed .buy-ctas .btn{width:100%;justify-content:center}
