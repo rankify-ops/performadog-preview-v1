@@ -133,12 +133,14 @@
 })();
 (function () {
   // Library search
-  var q = document.querySelector('[data-lib-search]');
-  if (q) q.addEventListener('input', function () {
+  document.querySelectorAll('[data-lib-search]').forEach(function (q) {
+  var tgt = q.getAttribute('data-lib-search') || '#lgrid';
+  q.addEventListener('input', function () {
     var v = q.value.trim().toLowerCase();
-    document.querySelectorAll('#lgrid [data-title]').forEach(function (c) {
+    document.querySelectorAll(tgt + ' [data-title]').forEach(function (c) {
       c.style.display = !v || c.getAttribute('data-title').indexOf(v) > -1 || c.textContent.toLowerCase().indexOf(v) > -1 ? '' : 'none';
     });
+  });
   });
   // Click-to-load YouTube
   document.querySelectorAll('[data-yt]').forEach(function (b) {

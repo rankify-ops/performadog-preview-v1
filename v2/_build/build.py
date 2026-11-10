@@ -36,7 +36,7 @@ def money(v):
 
 # ---- layout -------------------------------------------------------------------
 NAV = [('shop.html', 'Shop'), ('feeding-guide.html', 'Feeding guide'), ('science.html', 'The science'),
-       ('library.html', 'Library'), ('story.html', 'Our story'), ('reviews.html', 'Reviews')]
+       ('library.html', 'Journal'), ('story.html', 'Our story'), ('reviews.html', 'Reviews')]
 MENU_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>'
 
 
@@ -46,7 +46,7 @@ LEARN_IC = {'science.html': '<path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h
             'library.html': '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/>', 'story.html': '<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>',
             'reviews.html': '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'}
 LEARN = [('science.html', 'The science', 'Nutrient Ramping, gut health and how it is made'), ('case-study.html', 'Lab case study', 'One dog, two blood panels, twelve months apart'),
-         ('ingredients.html', 'Ingredients', 'Every formula, and where it comes from'), ('library.html', 'The library', '77 articles and 39 answers from Bill'),
+         ('ingredients.html', 'Ingredients', 'Every ingredient and nutrient, explained'), ('library.html', 'Journal', 'Handler interviews, Ask Bill and dog health'),
          ('story.html', 'Our story', 'Kris, Von Forell and 45 years of working dogs'), ('reviews.html', 'Reviews', f'{len(T)} handlers, breeders and owners')]
 
 
@@ -69,7 +69,7 @@ def mega_menus():
 
 def page(fname, title, desc, body, active=None):
     is_shop = active == 'shop.html'
-    is_learn = active in ('science.html', 'library.html', 'story.html', 'reviews.html')
+    is_learn = active in ('science.html', 'library.html', 'story.html', 'reviews.html', 'ingredients.html')
     nav = (f'<button class="nav-t" type="button" aria-expanded="false" aria-controls="mm-shop" data-mm-t{" aria-current=\"page\"" if is_shop else ""}>Shop{CHEV}</button>'
            f'<button class="nav-t" type="button" aria-expanded="false" aria-controls="mm-learn" data-mm-t{" aria-current=\"page\"" if is_learn else ""}>Learn{CHEV}</button>'
            f'<a href="feeding-guide.html"{" aria-current=\"page\"" if active == "feeding-guide.html" else ""}>Feeding guide</a>'
@@ -122,6 +122,8 @@ def page(fname, title, desc, body, active=None):
 </body>
 </html>'''
     with open(os.path.join(OUT, fname), 'w') as f:
+        for o, n in REMAP.items():
+            doc = doc.replace(f'"{o}"', f'"{n}"').replace(f'"{o}#', f'"{n}#')
         f.write(doc.replace(' →', '&nbsp;→'))
     return fname
 
@@ -711,7 +713,10 @@ def ingredients():
     body = page_head('Ingredients', ['Nothing', 'to hide'], '97.2% Australian ingredients. Human-grade meat from approved regional facilities. Here is every formula, ingredient by ingredient.') + f'''
 {plain_section(f'<div class="split split-narrow"><div class="stack-l"><h2 class="d d-md">Every formula</h2>{pic("ingredients", "Flat-lay: turkey, lamb, wild tuna, lupins, kelp", "ratio-11")}</div><div>{blocks}</div></div>', '')}
 {plain_section(f'<h2 class="h2" style="margin-bottom:20px">Where it comes from</h2><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ingredient</th><th>Source</th><th>Why it\'s there</th></tr></thead><tbody>{rows}</tbody></table></div><p class="small muted mt-s">{tbc("Kris: confirm origins, the more specific (state, farm), the stronger")}</p>', 'alt')}
-{plain_section(f'<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ingredient library</p><h2 class="d d-md">Why each one is in the bag</h2></div><a class="link" href="library.html">The full library →</a></div><div class="lgrid">{"".join(lib_card(a) for a in LIB if a["kind"] == "ingredient")}</div>', 'alt') if LIB else ''}
+{plain_section(f'''<div class="row between" style="margin-bottom:24px;align-items:flex-end"><div class="stack"><p class="mono steel">Ingredient guide</p><h2 class="d d-md">Why each one is in the bag</h2></div><p class="muted" style="max-width:30em">Every ingredient and nutrient in the range, explained. Tap one to read what it does and why Bill chose it.</p></div>
+<div class="row" style="margin-bottom:20px;align-items:center"><label class="sr" for="iq">Search ingredients and nutrients</label><input class="input" id="iq" type="search" placeholder="Search: kelp, taurine, omega-3, zinc…" style="max-width:420px" data-lib-search="#igrid"></div>
+<div class="chips" data-filter-group data-target="#igrid" style="margin-bottom:28px"><button class="chip" data-filter="all" aria-pressed="true">All ({sum(1 for a in LIB if a["kind"] in REF_KINDS)})</button><button class="chip" data-filter="ingredient" aria-pressed="false">Ingredients ({sum(1 for a in LIB if a["kind"] == "ingredient")})</button><button class="chip" data-filter="nutrient" aria-pressed="false">Nutrients ({sum(1 for a in LIB if a["kind"] == "nutrient")})</button></div>
+<div class="lgrid" id="igrid">{"".join(lib_card(a) for a in LIB if a["kind"] in REF_KINDS)}</div>''', 'alt', sid='all') if LIB else ''}
 {plain_section('<div class="g3"><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No chicken in the dog range</h3><p class="muted">Turkey Grain Free uses poultry oil; the other formulas have no poultry at all.</p></div><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No gluten, GMOs or dairy</h3><p class="muted">As printed on the bag.</p></div><div class="stack"><p class="mono steel">Never in it</p><h3 class="h3">No artificial preservatives</h3><p class="muted">Vitamin E and rosemary oil keep it fresh in a six-layer bag.</p></div></div>', '')}
 {cta_band()}'''
     return page('ingredients.html', 'Ingredients | Performadog', 'Every Performadog ingredient, formula by formula.', body)
@@ -844,9 +849,18 @@ def contact():
     return page('contact.html', 'Contact | Performadog', 'Contact Performadog.', body)
 
 
+REMAP = {}
+REF_KINDS = ('ingredient', 'nutrient')
+
+
 def build():
     global LIB, VIDEOS
     LIB = load_library()
+    for a in LIB:
+        if a['kind'] in ('ingredient', 'nutrient'):
+            new = f"{a['kind']}-{a['slug']}.html"
+            REMAP[a['file']] = new
+            a['file'] = new
     VIDEOS = json.load(open(os.path.join(os.path.dirname(__file__), 'videos.json'))) if os.path.exists(os.path.join(os.path.dirname(__file__), 'videos.json')) else []
     pages = [home(), shop(), story(), science(), case_study(), ingredients(), feeding(), reviews(), where_to_buy(), delivery(), faq(), contact()]
     pages += [product(p) for p in PRODUCTS]
@@ -923,29 +937,30 @@ def load_library():
 def lib_card(a, big=False):
     img = f'<div class="limg"><img src="{a["img"]}" alt="" loading="lazy"></div>' if a.get('img') else f'<div class="limg lph"><span>{E(a["title"][:1])}</span></div>'
     return f'''<a class="lcard" href="{a["file"]}" data-tags="{a["kind"]}" data-title="{E(a["title"].lower())}">{img}
-<div class="lbody"><p class="mono steel">{KIND.get(a["kind"], ("Notes",))[0]}{(" · " + a["year"]) if a.get("year") else ""}{' <span class="tbc">claims to fix</span>' if a.get("claims") else ""}</p><h3 class="h3">{E(a["title"])}</h3><p class="small muted">{E(a.get("summary", ""))}</p></div></a>'''
+<div class="lbody"><p class="mono steel">{KIND.get(a["kind"], ("Notes",))[0]}{(" · " + a["year"]) if a.get("year") else ""}</p><h3 class="h3">{E(a["title"])}</h3><p class="small muted">{E(a.get("summary", ""))}</p></div></a>'''
 
 
 def library_pages(lib, videos):
     if not lib:
         return []
     out = []
+    journal = [a for a in lib if a['kind'] not in REF_KINDS]
     by_kind = {}
-    for a in lib:
+    for a in journal:
         by_kind.setdefault(a['kind'], []).append(a)
     chips = '<button class="chip" data-filter="all" aria-pressed="true">All</button>' + ''.join(
         f'<button class="chip" data-filter="{k}" aria-pressed="false">{v[0]} ({len(by_kind.get(k, []))})</button>' for k, v in KIND.items() if by_kind.get(k))
-    cards = ''.join(lib_card(a) for a in lib)
+    cards = ''.join(lib_card(a) for a in journal)
     vids = ''
     if videos:
         vids = plain_section(f'''<div class="row between" style="margin-bottom:28px"><div class="stack"><p class="mono steel">Ask Bill</p><h2 class="d d-md">{len(videos)} questions, answered on camera</h2></div><p class="muted" style="max-width:26em">Bill Wiadrowski, animal nutritionist since 1986, on sourcing, manufacturing, raw vs dry, the microbiome and more.</p></div>
 <div class="g4">{"".join(video_card(v) for v in videos)}</div>''', 'alt', sid='videos')
-    body = page_head('The library', ['Everything', 'Kris &amp; Bill know'], f'{len(lib)} articles from the original Performadog site: every ingredient, nutrient, handler interview and Q&amp;A, rewritten into one place you can actually search.') + f'''
+    body = page_head('Journal', ['Stories, advice', 'and answers'], f'{len(journal)} articles from the original Performadog site: handler and breeder interviews, Ask Bill, dog health and Kris\u2019s story. Looking for an ingredient? <a href="ingredients.html#all">See the ingredient guide</a>.') + f'''
 <section class="sec"><div class="wrap pad">
-<div class="row" style="margin-bottom:24px;align-items:center"><label class="sr" for="lq">Search the library</label><input class="input" id="lq" type="search" placeholder="Search: kelp, taurine, joints, puppies…" style="max-width:420px" data-lib-search></div>
+<div class="row" style="margin-bottom:24px;align-items:center"><label class="sr" for="lq">Search the journal</label><input class="input" id="lq" type="search" placeholder="Search: puppies, joints, Rottweilers, Bill…" style="max-width:420px" data-lib-search="#lgrid"></div>
 <div class="chips" data-filter-group data-target="#lgrid" style="margin-bottom:28px">{chips}</div>
 <div class="lgrid" id="lgrid">{cards}</div></div></section>{vids}{cta_band()}'''
-    out.append(page('library.html', 'The library | Performadog', 'Ingredients, nutrients, handler interviews and Bill Wiadrowski\'s Q&A.', body, 'library.html'))
+    out.append(page('library.html', 'Journal | Performadog', 'Handler interviews, Bill Wiadrowski\'s Q&A, dog health and the Performadog story.', body, 'library.html'))
     for a in lib:
         out.append(article(a, lib))
     return out
@@ -976,9 +991,9 @@ def article(a, lib):
     prods = related_products(a)
     pcards = ''.join(f'<a class="mini" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt=""><span><b>{E(p["name"])}</b><span class="small muted">From {money(min(s[2] for s in p["sizes"] if s[2]))} · {money(round(pday(p, default_size(p)[1], default_size(p)[2]), 2))}/day</span><span class="mono ember" style="font-size:11px;margin-top:4px">View product →</span></span></a>' for p in prods)
     words = len(a.get('body', '').split())
-    claims = (f'<div class="tbc-block" style="margin-bottom:28px"><p class="mono">Preview note: fix before launch</p><p class="small">This article makes health claims we can\'t support: {E(a.get("claims_note", ""))} We\'d rewrite those lines; the rest can stay.</p></div>' if a.get('claims') else '')
+    claims = ''  # claims notes go to Kris by email, not in the preview
     body = f'''<section class="sec alt"><div class="wrap" style="padding-top:48px;padding-bottom:48px"><div style="max-width:880px">
-<p class="mono steel"><a href="library.html" style="text-decoration:none">Library</a> / {KIND.get(a["kind"], ("Notes",))[0]}</p>
+<p class="mono steel">{('<a href="ingredients.html#all" style="text-decoration:none">Ingredient guide</a>' if a["kind"] in REF_KINDS else '<a href="library.html" style="text-decoration:none">Journal</a>')} / {KIND.get(a["kind"], ("Notes",))[0]}</p>
 <h1 class="d d-lg" style="margin-top:18px;font-size:clamp(40px,5.6vw,80px)">{E(a["title"])}</h1>
 <p class="lead muted mt-s">{E(a.get("summary", ""))}</p>
 <p class="mono muted mt-s">{E(a.get("date_h", ""))}{" · " if a.get("date_h") else ""}{max(1, round(words / 220))} min read</p>{hero}</div></div></section>
@@ -988,7 +1003,7 @@ def article(a, lib):
 <aside class="stack-l"><div class="stack"><p class="mono steel">Feed it</p>{pcards}</div>
 {('<div class="stack read-next"><p class="mono steel">Read next</p>' + "".join(f'<a class="link" href="{r["file"]}">{E(r["title"])}</a>' for r in rel) + '</div>') if rel else ''}</aside>
 </div></div></section>{cta_band()}'''
-    return page(a['file'], f'{a["title"]} | Performadog library', a.get('summary', '')[:155], body, 'library.html')
+    return page(a['file'], f'{a["title"]} | Performadog {"ingredient guide" if a["kind"] in REF_KINDS else "journal"}', a.get('summary', '')[:155], body, 'ingredients.html' if a['kind'] in REF_KINDS else 'library.html')
 
 
 if __name__ == '__main__':
