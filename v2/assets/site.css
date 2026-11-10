@@ -843,3 +843,4 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 .igp-pull blockquote::after{content:"\201D"}
 .igp-pull figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
 @media (max-width:600px){.igp-pull{padding-left:44px}.igp-pull::before{font-size:76px;top:-6px}}
+@media (max-width:899px){.fr-img{aspect-ratio:auto;max-height:none}.fr-img img{height:auto}}
