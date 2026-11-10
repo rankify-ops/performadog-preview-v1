@@ -790,3 +790,8 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 /* trust row: under the bag on desktop, under Add to cart on mobile/tablet */
 @media (max-width:979px){.pdp-trust-d{display:none}}
 @media (min-width:980px){.pdp-trust-m{display:none}}
+.hero .lead{text-wrap:pretty}
+.hero-rating{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;text-decoration:none;color:inherit;font-size:14px;margin-bottom:-6px}
+.hero-rating .stars svg{width:18px;height:18px}
+.hero-rating span{opacity:.92}
+.hero-rating:hover span{text-decoration:underline;text-underline-offset:3px}

@@ -373,11 +373,12 @@ def home():
 <section class="sec hero"><div class="wrap">
 <div class="hero2">
 <div class="hero-copy">
+<a class="hero-rating" href="reviews.html">{stars()}<span><b>5.0</b> from {len(T)} reviews<span class="hr-x"> · Rated 9/10 by Petfood Reviews</span></span></a>
 <h1 class="d d-xl"><span>Bred &amp; fed</span><span class="ember">for performance.</span></h1>
 <p class="lead">Premium Australian dog food, formulated by an animal nutritionist and proven on working dogs since 2015. Feed it for as little as <b class="nowrap">{money(MIN_PD[0])} a day</b>.</p>
 <div class="hero-pd"><span class="hero-pd-n">{money(MIN_PD[0])}</span><span class="hero-pd-t"><b>per day</b>{MIN_PD[1]}</span></div>
 <div class="row" style="gap:18px;align-items:center"><a class="btn btn-ember btn-lg" href="shop.html">Shop now</a><a class="link" href="feeding-guide.html">Find my dog's food →</a></div>
-<p class="small muted">{stars()} 5.0 from {len(T)} reviews · Rated 9/10 by Petfood Reviews</p>
+
 </div>
 <div class="{hero_cls} hero-shot">{hero_inner}
 <svg class="track" viewBox="0 0 800 450" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 420 C 120 400, 160 330, 260 340 S 420 380, 500 290 S 640 150, 820 120" fill="none" stroke="#f0643a" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/></svg>

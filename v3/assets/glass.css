@@ -273,3 +273,11 @@ html,body.glass{overflow-x:clip}
 .glass .pdp-trust li{background:var(--glass-bg);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 #fff,0 14px 30px -20px rgba(90,45,15,.45)}
 .glass .hero-pd{color:#f1e6cf}
 @media (max-width:979px){.glass .hero-pd{align-self:center}.glass .hero .lead{text-align:left}}
+/* hero copy: fill the line, no early breaks */
+.glass .hero-copy{max-width:720px}
+.glass .hero .lead{text-wrap:pretty;max-width:36em}
+.glass .hero .small.muted{text-wrap:pretty}
+.glass .hero-rating{color:#f1e6cf;padding:7px 14px 7px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+@media (max-width:979px){.glass .hero-rating{flex-wrap:wrap;gap:6px 10px;font-size:13px}}
+@media (max-width:420px){.glass .hero-rating{font-size:12px;padding:6px 12px}}
+@media (max-width:600px){.glass .hero-rating{flex-wrap:nowrap;white-space:nowrap;align-self:flex-start!important;font-size:13px}.glass .hero-rating .hr-x{display:none}}
