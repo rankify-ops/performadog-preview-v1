@@ -93,7 +93,6 @@ def page(fname, title, desc, body, active=None):
 <link rel="stylesheet" href="assets/site.css?v={VER}">{f'<link rel="stylesheet" href="assets/glass.css?v={VER}">' if GLASS else ''}
 </head>
 <body{' class="glass"' if GLASS else ''}>
-<div class="preview-bar">Design preview {PV} · not the live store · <span class="tbc">highlighted</span> = info we need from you</div>
 <div class="ann"><span>Free metro delivery over ${FREE_SHIP}</span><span class="hide-s"> · Subscribe &amp; save on every bag · Dispatched within 24 hours</span></div>
 <header class="hdr">
 <div class="wrap">
@@ -552,7 +551,7 @@ def product(p):
     body = f'''<section class="sec"><div class="wrap" style="padding-top:28px;padding-bottom:72px">
 <p class="mono muted" style="margin-bottom:20px"><a href="shop.html">Shop</a> / {E(p["job"])}</p>
 <div class="pdp" data-pdp>
-<div class="pdp-left"><div class="pdp-media tone"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag"><span class="stock-tag" style="background:#f0643a;color:#121412">Pack shots: 1600px re-export needed</span></div>
+<div class="pdp-left"><div class="pdp-media tone"><img src="assets/img/product/{p["img"]}" alt="{E(p["full"])} bag"></div>
 <ul class="pdp-trust pdp-trust-d"><li>{I_SHIELD}<span><b>Not eaten? Money back</b>Palatability guarantee</span></li><li>{I_TRUCK}<span><b>Free metro delivery</b>on orders over ${FREE_SHIP}</span></li><li>{I_STAR}<span><b>Australian made</b>and family owned</span></li></ul></div>
 <div class="stack-l">
 <div class="stack"><span class="tag tag-ember" style="align-self:flex-start">{E(p["job"])}</span>
