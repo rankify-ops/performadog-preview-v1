@@ -798,3 +798,27 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 .hero-pd{flex-direction:column;align-items:flex-start;gap:4px;padding:12px 20px 14px 18px}
 .hero-pd-k{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
 .hero-pd-row{display:flex;align-items:center;gap:14px}
+/* IGP explainer band */
+.igp-g{display:grid;gap:14px}
+@media (min-width:860px){.igp-g{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.igp-c{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:22px 22px 24px;display:flex;flex-direction:column;gap:8px}
+.igp-k{font:800 13px/1 var(--font-m,monospace);color:var(--ember);letter-spacing:.1em}
+.igp-c h3{font-size:19px;font-weight:800;line-height:1.25}
+.igp-c p:last-child{color:var(--muted);font-size:15px;line-height:1.5}
+.igp + .fr{padding-top:0}
+/* Kern snippet on product pages */
+.ks{display:grid;gap:28px;align-items:center}
+@media (min-width:900px){.ks{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:56px}}
+.ks-img{position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--sand)}
+.ks-img img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.ks-badge{position:absolute;left:14px;top:14px;background:var(--ember);color:#fff;font:900 22px/1 var(--font-d);padding:10px 14px;border-radius:12px;letter-spacing:.02em}
+.ks-body{display:flex;flex-direction:column;gap:14px}
+.ks-body .stars svg{width:20px;height:20px}
+.ks-q{margin:0;font-size:clamp(28px,3.2vw,44px);line-height:1.12;font-weight:700;letter-spacing:-.015em;text-wrap:balance}
+.ks-who{color:var(--muted);font-size:15px}.ks-who b{color:var(--ink)}
+.ks-facts{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.ks-facts li{display:flex;flex-direction:column;gap:4px;border-top:2px solid var(--ember);padding-top:10px}
+.ks-facts b{font:900 28px/1 var(--font-d)}
+.ks-facts span{font-size:13px;color:var(--muted);line-height:1.35}
+.ks .link{align-self:flex-start}
+.ks-img img{object-position:50% 0%}

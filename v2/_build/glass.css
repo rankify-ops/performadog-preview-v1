@@ -281,3 +281,15 @@ html,body.glass{overflow-x:clip}
 @media (max-width:979px){.glass .hero-rating{flex-wrap:wrap;gap:6px 10px;font-size:13px}}
 @media (max-width:420px){.glass .hero-rating{font-size:12px;padding:6px 12px}}
 @media (max-width:600px){.glass .hero-rating{flex-wrap:nowrap;white-space:nowrap;align-self:flex-start!important;font-size:13px}.glass .hero-rating .hr-x{display:none}}
+.glass .igp-c{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:20px}
+.glass .igp-g{position:relative;isolation:isolate}
+.glass .igp-g::before{content:"";position:absolute;inset:-40px -20px;z-index:-1;filter:blur(28px);background:var(--glow);opacity:.6;pointer-events:none}
+.glass .ks-img{border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:24px}
+.glass .ks-body{background:var(--glass-bg);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-line);box-shadow:var(--glass-sh);border-radius:24px;padding:clamp(22px,3vw,36px)}
+.glass .ks{position:relative;isolation:isolate}
+.glass .ks::before{content:"";position:absolute;inset:-40px -10% -40px 30%;z-index:-1;filter:blur(30px);background:var(--glow);opacity:.55;pointer-events:none}
+/* library article: sentence-case read-next links, glass mini product cards, heads in frame */
+.glass .read-next .link{text-transform:none;letter-spacing:0;font-size:15px;font-weight:600;line-height:1.35}
+.glass .mini{background:var(--glass-bg)!important;-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--glass-line)!important;box-shadow:var(--glass-sh);border-radius:16px}
+.glass .mini img{border-radius:10px;background:var(--inset)}
+.glass .shot.ratio-169 img{object-position:50% 20%}

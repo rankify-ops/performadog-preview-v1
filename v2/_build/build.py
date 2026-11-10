@@ -182,6 +182,34 @@ def stars(label=True):
     return f'<span class="stars" role="img" aria-label="5 out of 5 stars">{STAR1 * 5}</span>'
 
 
+
+KERN_URL = 'library-with-dr-michael-kern.html'
+IGP_FACTS = [('Tracking, obedience, protection', 'IGP is the international working dog sport, formerly IPO or Schutzhund. Every trial tests all three.'),
+             ('Three levels. IGP 3 is the top.', 'Dogs work up through IGP 1 and IGP 2. IGP 3 is the highest standard title in the sport.'),
+             ('A first since the late 1980s', 'Caesar was the first Dobermann in Australia to earn IGP 3 since the late 1980s.')]
+
+
+def igp_band():
+    cards = ''.join(f'<div class="igp-c"><p class="igp-k">0{i + 1}</p><h3>{h}</h3><p>{t}</p></div>' for i, (h, t) in enumerate(IGP_FACTS))
+    return f'''<section class="sec igp"><div class="wrap pad stack-l">
+<div class="row between" style="align-items:flex-end;gap:20px"><div class="stack" style="gap:10px"><p class="mono steel">What IGP 3 means</p><h2 class="d d-md">The highest title in working dog sport.</h2></div>
+<a class="link" href="{KERN_URL}">Read Dr Kern's interview →</a></div>
+<div class="igp-g">{cards}</div></div></section>'''
+
+
+def kern_snip(p):
+    pb = p['slug'] == 'purple-boost'
+    q = "The \u2018Purple Boost\u2019 product is incredible." if pb else "Caesar is thriving on this food."
+    im = IMG.get('t-kern')
+    return f'''<section class="sec kern-snip"><div class="wrap pad"><div class="ks">
+<div class="ks-img">{f'<img src="{im["src"]}" alt="Dr Michael Kern with Caesar" loading="lazy">' if im else ''}<span class="ks-badge">IGP 3</span></div>
+<div class="ks-body"><p class="mono steel">Proven at the top of the sport</p>{stars()}
+<blockquote class="ks-q">\u201c{q}\u201d</blockquote>
+<p class="ks-who"><b>Dr Michael Kern</b> · Neurosurgeon, Perth · handler of Caesar, Von Forell Dobermann</p>
+<ul class="ks-facts"><li><b>IGP 3</b><span>the highest title in working dog sport</span></li><li><b>1st</b><span>Dobermann in Australia to reach it since the late 1980s</span></li><li><b>~1 hr</b><span>with our nutritionist before he switched</span></li></ul>
+<p class="disclose">Disclosure: Caesar was bred by Von Forell, Kris's kennel.</p>
+<a class="link" href="{KERN_URL}">Read the full interview →</a></div></div></div></section>'''
+
 def featured_review(t, side='left', theme=''):
     im = IMG.get('t-' + t['id'])
     img = f'<div class="fr-img"><img src="{im["src"]}" alt="{E(t["dog"])}" loading="lazy"></div>' if im else ''
@@ -390,6 +418,7 @@ def home():
 {rail_section(1, 'Shop the formula', f"""<div class="row between" style="margin-bottom:40px"><h2 class="d d-md">Four products. One job each.</h2>
 <p class="muted" style="max-width:28em">Formulated with Bill Wiadrowski, animal nutritionist since 1986. 97.2% Australian ingredients. Real meat first. Price per day is worked out from the feeding table printed on the bag. Bigger bags work out cheaper.</p></div>
 <div class="feeds">{feeds}</div>""", theme='', sid='formula')}
+{igp_band()}
 {featured_review(t['kern'])}
 {needs_block()}
 {calc_block('<div class="calc-head"><p class="mono steel">Feeding calculator</p><h2 class="d d-md">Take out the guesswork.</h2><p class="muted">Four questions. Which food, how much a day, how long a bag lasts and what it costs.</p></div>').replace('<section class="sec">', '<section class="sec" id="calculator">', 1)}
@@ -536,6 +565,7 @@ def product(p):
 <dialog class="ingd" data-ingd aria-labelledby="ingd-t"><div class="ingd-in"><button class="ingd-x" type="button" data-ingd-close aria-label="Close">✕</button>
 <div class="ingd-c" data-ingd-c></div><h3 class="h3" id="ingd-t" data-ingd-t></h3><p class="ingd-p" data-ingd-p></p>
 <div class="ingd-links"><a class="btn btn-ember" data-ingd-a href="#">Read more about it</a><a class="btn btn-line" href="ingredients.html">See every ingredient</a></div></div></dialog>
+{kern_snip(p) if p["kind"] != "cat" else ""}
 <section class="sec alt kris-band"><div class="wrap pad"><div class="kris-grid">
 <div class="kris-img"><img src="{IMG['kris']['src']}" alt="Kris Kotsopoulos with a Von Forell Dobermann" loading="lazy"></div>
 <div class="stack-l"><div class="stack"><p class="mono steel">Who makes it</p><h2 class="d d-md">Built by a performance breeder and dog nutritionist.</h2>
@@ -919,13 +949,14 @@ def related_products(a):
 
 
 def article(a, lib):
-    body_html = MD.render(a.get('body', ''))
+    import re as _re
+    body_html = _re.sub(r'\*\*', '', MD.render(_re.sub(r'\*\*(\s*[?.,!:;]\s*)\*\*', r'\1', a.get('body', ''))))
     hero = f'<div class="shot ratio-169" style="margin-top:32px"><img src="{a["img"]}" alt="" ></div>' if a.get('img') else ''
     extra = ''.join(f'<figure style="margin:32px 0"><div class="shot ratio-43"><img src="{s}" alt="" loading="lazy"></div></figure>' for s in a.get('more_imgs', [])[:3])
     yt = ''.join(f'<div class="vembed"><iframe src="https://www.youtube-nocookie.com/embed/{E(y)}" title="Video" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>' for y in a.get('yt', [])[:2])
     rel = [x for x in lib if x['kind'] == a['kind'] and x['file'] != a['file']][:3]
     prods = related_products(a)
-    pcards = ''.join(f'<a class="mini" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt=""><span><b>{E(p["name"])}</b><span class="small muted">From {money(min(s[2] for s in p["sizes"] if s[2]))} · {money(round(pday(p, default_size(p)[1], default_size(p)[2]), 2))}/day</span><span class="mono ember" style="font-size:11px;margin-top:4px">Shop now →</span></span></a>' for p in prods)
+    pcards = ''.join(f'<a class="mini" href="{p["slug"]}.html"><img src="assets/img/product/{p["img"]}" alt=""><span><b>{E(p["name"])}</b><span class="small muted">From {money(min(s[2] for s in p["sizes"] if s[2]))} · {money(round(pday(p, default_size(p)[1], default_size(p)[2]), 2))}/day</span><span class="mono ember" style="font-size:11px;margin-top:4px">View product →</span></span></a>' for p in prods)
     words = len(a.get('body', '').split())
     claims = (f'<div class="tbc-block" style="margin-bottom:28px"><p class="mono">Preview note: fix before launch</p><p class="small">This article makes health claims we can\'t support: {E(a.get("claims_note", ""))} We\'d rewrite those lines; the rest can stay.</p></div>' if a.get('claims') else '')
     body = f'''<section class="sec alt"><div class="wrap" style="padding-top:48px;padding-bottom:48px"><div style="max-width:880px">
@@ -937,7 +968,7 @@ def article(a, lib):
 <article class="prose">{claims}{body_html}{extra}{yt}
 <p class="small muted" style="margin-top:40px;border-top:1px solid var(--hair);padding-top:16px">First published on performadog.com.au{(" in " + a["year"]) if a.get("year") else ""}. Lightly edited for the new site. This is general information, not veterinary advice.</p></article>
 <aside class="stack-l"><div class="stack"><p class="mono steel">Feed it</p>{pcards}</div>
-{('<div class="stack"><p class="mono steel">Read next</p>' + "".join(f'<a class="link" href="{r["file"]}">{E(r["title"])}</a>' for r in rel) + '</div>') if rel else ''}</aside>
+{('<div class="stack read-next"><p class="mono steel">Read next</p>' + "".join(f'<a class="link" href="{r["file"]}">{E(r["title"])}</a>' for r in rel) + '</div>') if rel else ''}</aside>
 </div></div></section>{cta_band()}'''
     return page(a['file'], f'{a["title"]} | Performadog library', a.get('summary', '')[:155], body, 'library.html')
 
