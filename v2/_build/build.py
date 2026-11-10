@@ -375,8 +375,8 @@ def home():
 <div class="hero-copy">
 <a class="hero-rating" href="reviews.html">{stars()}<span><b>5.0</b> from {len(T)} reviews<span class="hr-x"> · Rated 9/10 by Petfood Reviews</span></span></a>
 <h1 class="d d-xl"><span>Bred &amp; fed</span><span class="ember">for performance.</span></h1>
-<p class="lead">Premium Australian dog food, formulated by an animal nutritionist and proven on working dogs since 2015. Feed it for as little as <b class="nowrap">{money(MIN_PD[0])} a day</b>.</p>
-<div class="hero-pd"><span class="hero-pd-n">{money(MIN_PD[0])}</span><span class="hero-pd-t"><b>per day</b>{MIN_PD[1]}</span></div>
+<p class="lead">Australian-made dog food, built by a breeder of working dogs and an animal nutritionist. Fed to sport, working and family dogs since 2015.</p>
+<div class="hero-pd"><span class="hero-pd-k">Feed your dog from as little as</span><span class="hero-pd-row"><span class="hero-pd-n">{money(MIN_PD[0])}</span><span class="hero-pd-t"><b>per day</b>{MIN_PD[1]}</span></span></div>
 <div class="row" style="gap:18px;align-items:center"><a class="btn btn-ember btn-lg" href="shop.html">Shop now</a><a class="link" href="feeding-guide.html">Find my dog's food →</a></div>
 
 </div>

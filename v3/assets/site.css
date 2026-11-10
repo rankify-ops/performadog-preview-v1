@@ -795,3 +795,6 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 .hero-rating .stars svg{width:18px;height:18px}
 .hero-rating span{opacity:.92}
 .hero-rating:hover span{text-decoration:underline;text-underline-offset:3px}
+.hero-pd{flex-direction:column;align-items:flex-start;gap:4px;padding:12px 20px 14px 18px}
+.hero-pd-k{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
+.hero-pd-row{display:flex;align-items:center;gap:14px}
