@@ -186,14 +186,33 @@ def stars(label=True):
 KERN_URL = 'library-with-dr-michael-kern.html'
 IGP_FACTS = [('Tracking, obedience, protection', 'IGP is the international working dog sport, formerly IPO or Schutzhund. Every trial tests all three.'),
              ('Three levels. IGP 3 is the top.', 'Dogs work up through IGP 1 and IGP 2. IGP 3 is the highest standard title in the sport.'),
-             ('A first since the late 1980s', 'Caesar was the first Dobermann in Australia to earn IGP 3 since the late 1980s.')]
+             ('Bred and backed by Kris', 'Caesar was bred at Von Forell, Kris\u2019s kennel. Dr Kern trained with Kris\u2019s system and mentoring, and feeds Performadog.')]
 
+
+
+def igp_badge(cls='igp-badge'):
+    # Original medal design (not an official IGP / FCI mark)
+    teeth = ''.join(f'<polygon points="100,6 {100 + 9},{20} {100 - 9},{20}" transform="rotate({a} 100 100)"/>' for a in range(0, 360, 15))
+    return f'''<svg class="{cls}" viewBox="0 0 200 250" role="img" aria-label="IGP 3 title badge">
+<defs><linearGradient id="igpg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7a823"/><stop offset=".55" stop-color="#ee7a1f"/><stop offset="1" stop-color="#d9302b"/></linearGradient>
+<linearGradient id="igpr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b52f16"/><stop offset="1" stop-color="#7f1f0e"/></linearGradient>
+<path id="igpt" d="M100,100 m-66,0 a66,66 0 1,1 132,0"/><path id="igpb" d="M100,100 m-74,0 a74,74 0 0,0 148,0"/></defs>
+<path d="M62 150 L44 244 L72 228 L88 250 L100 168Z" fill="url(#igpr)"/><path d="M138 150 L156 244 L128 228 L112 250 L100 168Z" fill="url(#igpr)"/>
+<g fill="url(#igpg)">{teeth}</g><circle cx="100" cy="100" r="86" fill="url(#igpg)"/>
+<circle cx="100" cy="100" r="78" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.5"/>
+<circle cx="100" cy="100" r="56" fill="#1a1714"/><circle cx="100" cy="100" r="51" fill="none" stroke="#f7a823" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text font-family="Archivo, Arial, sans-serif" font-weight="800" font-size="11" letter-spacing="2.6" fill="#1a1714"><textPath href="#igpt" startOffset="50%" text-anchor="middle">HIGHEST TITLE</textPath></text>
+<text font-family="Archivo, Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="2.2" fill="#1a1714" dy="9"><textPath href="#igpb" startOffset="50%" text-anchor="middle">WORKING DOG SPORT</textPath></text>
+<text x="100" y="94" text-anchor="middle" font-family="Anton, Archivo, Arial, sans-serif" font-weight="900" font-size="26" letter-spacing="2" fill="#fff">IGP</text>
+<text x="100" y="134" text-anchor="middle" font-family="Anton, Archivo, Arial, sans-serif" font-weight="900" font-size="46" fill="#f7a823">3</text>
+<g fill="#f7a823"><circle cx="58" cy="100" r="2.4"/><circle cx="142" cy="100" r="2.4"/></g></svg>'''
 
 def igp_band():
     cards = ''.join(f'<div class="igp-c"><p class="igp-k">0{i + 1}</p><h3>{h}</h3><p>{t}</p></div>' for i, (h, t) in enumerate(IGP_FACTS))
     return f'''<section class="sec igp"><div class="wrap pad stack-l">
-<div class="row between" style="align-items:flex-end;gap:20px"><div class="stack" style="gap:10px"><p class="mono steel">What IGP 3 means</p><h2 class="d d-md">The highest title in working dog sport.</h2></div>
-<a class="link" href="{KERN_URL}">Read Dr Kern's interview →</a></div>
+<div class="igp-top">{igp_badge()}<div class="stack" style="gap:12px"><p class="mono steel">What IGP 3 means</p><h2 class="d d-md">The highest title in working dog sport.</h2>
+<p class="muted igp-lead">Caesar, a Von Forell Dobermann handled by Dr Michael Kern, earned his IGP 3. He was the first Dobermann in Australia to reach it since the late 1980s.</p>
+<a class="link" href="{KERN_URL}">Read Dr Kern's interview →</a></div></div>
 <div class="igp-g">{cards}</div></div></section>'''
 
 
@@ -202,7 +221,7 @@ def kern_snip(p):
     q = "The \u2018Purple Boost\u2019 product is incredible." if pb else "Caesar is thriving on this food."
     im = IMG.get('t-kern')
     return f'''<section class="sec kern-snip"><div class="wrap pad"><div class="ks">
-<div class="ks-img">{f'<img src="{im["src"]}" alt="Dr Michael Kern with Caesar" loading="lazy">' if im else ''}<span class="ks-badge">IGP 3</span></div>
+<div class="ks-img">{f'<img src="{im["src"]}" alt="Dr Michael Kern with Caesar" loading="lazy">' if im else ''}{igp_badge("ks-medal")}</div>
 <div class="ks-body"><p class="mono steel">Proven at the top of the sport</p>{stars()}
 <blockquote class="ks-q">\u201c{q}\u201d</blockquote>
 <p class="ks-who"><b>Dr Michael Kern</b> · Neurosurgeon, Perth · handler of Caesar, Von Forell Dobermann</p>
