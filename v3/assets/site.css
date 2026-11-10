@@ -832,3 +832,7 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 @media (min-width:900px){.ks-medal{width:116px}}
 .ks-medal{left:auto;top:auto;right:12px;bottom:6px}@media (max-width:899px){.ks-img{aspect-ratio:1/1}}
 .ks-img{aspect-ratio:1/1}
+/* Brand gradient text (red to orange, as on the original Performadog logo) */
+.grad,.d .ember,p.d.ember,strong.ember[data-pdp-pd],.hero-pd-n,.kris-tl b,.ks-facts b,.tl-big span{background:linear-gradient(90deg,#d9302b 0%,#ee7a1f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hero .d .ember,.hero-pd-n{background-image:linear-gradient(90deg,#ff4d2e 0%,#ff9a2e 100%)}
+.d .grad{width:fit-content;max-width:100%}

@@ -158,10 +158,10 @@ def plain_section(inner, theme='', cls='pad', sid=''):
 
 
 def page_head(eyebrow, title_lines, intro, theme='alt', aside=''):
-    spans = ''.join(f'<span>{t}</span>' for t in title_lines)
+    spans = ''.join(f'<span{" class=\"grad\"" if i == len(title_lines) - 1 and len(title_lines) > 1 else ""}>{t}</span>' for i, t in enumerate(title_lines))
     return f'''<section class="sec {theme}"><div class="wrap" style="padding-top:56px;padding-bottom:56px">
 <p class="mono steel" style="margin-bottom:20px">{eyebrow}</p>
-<div class="split split-wide" style="align-items:end"><h1 class="d d-lg" style="line-height:.9">{spans.replace('<span>', '<span style="display:block">')}</h1>
+<div class="split split-wide" style="align-items:end"><h1 class="d d-lg" style="line-height:.9">{spans.replace('<span', '<span style="display:block"')}</h1>
 <div class="stack"><p class="lead muted">{intro}</p>{aside}</div></div>
 </div></section>'''
 
