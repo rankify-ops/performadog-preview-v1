@@ -310,3 +310,5 @@ html,body.glass{overflow-x:clip}
 .glass .hero-rating{background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-radius:0}
 .glass .usp ul{align-items:stretch!important}.glass .usp li{height:100%}
 @media (max-width:899px){.glass .fr-img{aspect-ratio:auto;max-height:none}.glass .fr-img img{height:auto;object-fit:contain}}
+.glass section.needs-band{background:linear-gradient(115deg,#c2321a 0%,#d9431c 45%,#ee7a1f 100%)!important}
+.glass .needs-band .needs::before{content:none}

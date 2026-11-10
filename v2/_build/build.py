@@ -292,7 +292,7 @@ def usp_bar():
 
 def needs_block():
     tiles = ''.join(f'<a class="need" href="{h}"><span class="need-ic tone">{ic}</span><span class="need-t">{t}</span><span class="need-s">{s} →</span></a>' for h, t, s, ic in NEEDS)
-    return plain_section(f'<div class="row between" style="margin-bottom:24px;align-items:baseline"><h2 class="d d-md">Shop by need</h2><a class="link" href="shop.html">See the full range →</a></div><div class="needs">{tiles}</div>', 'alt', 'pad-s')
+    return plain_section(f'<div class="row between" style="margin-bottom:24px;align-items:baseline"><h2 class="d d-md">Shop by need</h2><a class="link" href="shop.html">See the full range →</a></div><div class="needs">{tiles}</div>', 'needs-band', 'pad-s')
 
 
 TL_DETAIL = {

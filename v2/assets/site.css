@@ -844,3 +844,17 @@ h2.d-md{max-width:22ch;text-wrap:balance}
 .igp-pull figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
 @media (max-width:600px){.igp-pull{padding-left:44px}.igp-pull::before{font-size:76px;top:-6px}}
 @media (max-width:899px){.fr-img{aspect-ratio:auto;max-height:none}.fr-img img{height:auto}}
+/* Shop by need on the brand gradient */
+.needs-band{background:linear-gradient(115deg,#c2321a 0%,#d9431c 45%,#ee7a1f 100%);color:#fff;position:relative;overflow:hidden;isolation:isolate}
+.needs-band::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(40% 80% at 90% 10%,rgba(247,168,35,.5),transparent 70%),radial-gradient(35% 70% at 5% 100%,rgba(120,20,10,.35),transparent 70%)}
+.needs-band .d{color:#fff}
+.needs-band .link{color:#fff;text-decoration-color:rgba(255,255,255,.7)}
+.needs-band .need{background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.4)!important;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 16px 30px -18px rgba(80,20,5,.6)!important}
+.needs-band .need:hover{background:rgba(255,255,255,.24)!important;border-color:#fff!important}
+.needs-band .need-t{color:#fff}
+.needs-band .need-s{color:rgba(255,255,255,.85)}
+.needs-band .need-ic,.needs-band .need-ic.tone{background:#fff!important}
+.needs-band .need-ic svg{color:var(--ember)}
+.needs-band .need:hover .need-ic,.needs-band .need:hover .need-ic.tone{background:#1a1714!important}
+.needs-band .need:hover .need-ic svg{color:#fff}
+.needs-band h2.d{color:#fff!important;-webkit-text-fill-color:#fff;opacity:1}
