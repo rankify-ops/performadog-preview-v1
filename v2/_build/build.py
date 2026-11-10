@@ -484,7 +484,7 @@ def shop():
 <button class="chip" data-filter="supplement" aria-pressed="false">Supplements</button><button class="chip" data-filter="cat" aria-pressed="false" id="cats">Cats (iPurr)</button></div>
 <div class="g3" id="grid">{dog}</div>
 <figure class="mt-l">{pic('range', '', 'ratio-169')}<figcaption class="mono muted mt-s">The full Performadog and iPurr range</figcaption></figure>
-<div class="tbc-block mt"><p class="mono">Pending from Kris</p><p class="small">Bundles (which foods, sizes and price) and the 20 kg bag price. Both are built into the store and waiting on numbers.</p></div>''') + compare_block() + cta_band()
+''') + compare_block() + cta_band()
     return page('shop.html', 'Shop | Performadog', 'Performadog dog food, Purple Boost and iPurr cat food.', body, 'shop.html')
 
 
@@ -684,7 +684,7 @@ def case_study():
 <div class="wrap pad"><div class="row between" style="margin-bottom:12px"><h2 class="h2">The results</h2>
 <p class="mono muted" style="display:flex;gap:18px;flex-wrap:wrap"><span>○ {tbc("Date 1")}</span><span>● {tbc("Date 2")}</span><span><span style="display:inline-block;width:22px;height:10px;background:var(--band);vertical-align:middle"></span> Reference range</span></p></div>
 <div style="border-top:1px solid var(--hair)">{rows}</div>
-<div class="tbc-block mt"><p class="mono">What we need</p><p class="small">The two lab reports (a phone photo is fine). That gives every value, unit, reference range, the lab's name and both dates. The page fills itself from there.</p></div></div></section>
+</div></section>
 <section class="sec"><div class="wrap pad"><div class="split">
 <div class="stack"><p class="mono steel">What it shows, and what it doesn't</p><h2 class="h2">One dog's documented results. Not a promise for every dog.</h2>
 <p class="muted">This is a single dog, not a controlled trial. Diet, training, age and health all affect bloodwork, so we can't say the food alone caused these changes. We publish the full reports so you and your vet can read them yourselves.</p></div>
@@ -766,7 +766,7 @@ def reviews():
 <button class="chip" data-filter="all" aria-pressed="true">All</button><button class="chip" data-filter="working" aria-pressed="false">Working dogs</button><button class="chip" data-filter="sport" aria-pressed="false">Sport</button>
 <button class="chip" data-filter="breeder" aria-pressed="false">Breeders</button><button class="chip" data-filter="sensitive" aria-pressed="false">Sensitive gut &amp; skin</button><button class="chip" data-filter="puppy" aria-pressed="false">Puppies</button><button class="chip" data-filter="family" aria-pressed="false">Family dogs</button><button class="chip" data-filter="cat" aria-pressed="false">Cats</button></div>
 <div class="masonry" id="tgrid">{cards}</div>
-<div class="tbc-block mt"><p class="mono">Before launch</p><p class="small">Written OK from each person to reuse their words and photo on the new site. Most date from 2016–2020, so fresh ones from Kris's network will help.</p></div>
+
 </div></section>
 <section class="sec alt" id="share"><div class="wrap pad"><div class="split"><div class="stack-l"><p class="mono steel">Share your dog's story</p><h2 class="d d-md">Feeding Performadog? Tell us how it's going.</h2>
 <p class="muted">What your dog does, what changed, and a photo if you have one. We read every one, and with your OK we'll add it here.</p></div>
