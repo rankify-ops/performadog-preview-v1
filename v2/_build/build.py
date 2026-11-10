@@ -213,6 +213,7 @@ def igp_band():
     return f'''<section class="sec igp"><div class="wrap pad stack-l">
 <div class="igp-top">{igp_badge()}<div class="stack" style="gap:12px"><p class="mono steel">What IGP 3 means</p><h2 class="d d-md">The highest title in working dog sport.</h2>
 <p class="muted igp-lead">Caesar, a Von Forell Dobermann handled by Dr Michael Kern, earned his IGP 3. He was the first Dobermann in Australia to reach it since the late 1980s.</p>
+<figure class="igp-pull"><blockquote>Performadog has been an essential part of our success.</blockquote><figcaption>Dr Michael Kern, handler of Caesar</figcaption></figure>
 <a class="link" href="{KERN_URL}">Read Dr Kern's interview →</a></div></div>
 <div class="igp-g">{cards}</div></div></section>'''
 
